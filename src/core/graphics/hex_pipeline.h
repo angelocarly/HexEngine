@@ -2,18 +2,18 @@
 // Created by magnias on 04/04/2021.
 //
 
-#ifndef _RAYMARCH_PIPELINE_H_
-#define _RAYMARCH_PIPELINE_H_
+#ifndef _COMPUTE_PIPELINE_H_
+#define _COMPUTE_PIPELINE_H_
 
-#include <vulkan/vulkan.h>
 #include <vks/vks_util.h>
 #include "render_pipeline.h"
 #include <lodepng.h>
+#include <vks/VulkanInitializers.h>
 
-class RayMarchPipeline : public IRenderPipeline
+class HexPipeline : public IRenderPipeline
 {
  public:
-	RayMarchPipeline(VksDevice& device, VksSwapChain& swapChain, VkDescriptorPool& descriptorPool)
+	HexPipeline(VksDevice& device, VksSwapChain& swapChain, VkDescriptorPool& descriptorPool)
 		: _device(device), _descriptorPool(descriptorPool), _swapChain(swapChain)
 	{
 		init();
@@ -46,31 +46,32 @@ class RayMarchPipeline : public IRenderPipeline
 	{
 	}
 
-	void updateBuffers(Camera camera) override
+	void setEpsilon(float epsilon)
 	{
-//		UniformBufferObject ubo{};
-//		ubo.model = camera.calculateModelMatrix();
-//		ubo.view = camera.calculateViewMatrix();
-//		ubo.proj = camera.calculateProjectionMatrix();
-//		ubo.proj[1][1] *= -1;
-//
-//		ubo.view = glm::inverse(ubo.view);
-//
-//		void* data;
-//		vkMapMemory(_device.getVkDevice(), _uniformBuffersMemory[0], 0, sizeof(ubo), 0, &data);
-//		memcpy(data, &ubo, sizeof(ubo));
-//		vkUnmapMemory(_device.getVkDevice(), _uniformBuffersMemory[0]);
-		MeshPushConstants constants;
-		constants.model = camera.calculateModelMatrix();
-		constants.view = camera.calculateViewMatrix();
-		constants.projection = camera.calculateProjectionMatrix();
+		_epsilon = epsilon;
+	}
+
+	void setMaxPasses(int max_passes)
+	{
+		_max_passes = max_passes;
+	}
+
+    void updateBuffers(Camera camera)
+    {}
+
+	void updateBuffers()
+	{
+		HexPushConstants constants;
+//		constants.model = camera.calculateModelMatrix();
+//		constants.view = camera.calculateViewMatrix();
+//		constants.projection = camera.calculateProjectionMatrix();
 		std::chrono::milliseconds time =
 			std::chrono::duration_cast<std::chrono::milliseconds>(
 				std::chrono::system_clock::now().time_since_epoch()
 			);
 		constants.time = time.count() % 10000 / 1000.0f;
 		vkCmdPushConstants(_currentCommandBuffer, pipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0,
-			sizeof(MeshPushConstants), &constants);
+                           sizeof(HexPushConstants), &constants);
 
 		vkCmdDispatch(_currentCommandBuffer, (uint32_t)ceil(WIDTH / float(WORKGROUP_SIZE)), (uint32_t)ceil(
 			HEIGHT / float(WORKGROUP_SIZE)), 1);
@@ -92,13 +93,16 @@ class RayMarchPipeline : public IRenderPipeline
 
  private:
 
-	struct MeshPushConstants
+	struct HexPushConstants
 	{
 		glm::mat4 model;
 		glm::mat4 view;
 		glm::mat4 projection;
 		float time;
 	};
+
+	float _epsilon = 0.001f;
+	int _max_passes = 200;
 
 	const int WIDTH = 1600;
 	const int HEIGHT = 900;
@@ -207,7 +211,7 @@ class RayMarchPipeline : public IRenderPipeline
 
 		VkPushConstantRange push_constant;
 		push_constant.offset = 0;
-		push_constant.size = sizeof(MeshPushConstants);
+		push_constant.size = sizeof(HexPushConstants);
 		push_constant.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
@@ -318,12 +322,12 @@ class RayMarchPipeline : public IRenderPipeline
 		VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
 		shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 		shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-		shaderStageCreateInfo.module = _device.createShaderModule(VksUtil::readFile("shaders/raymarching.comp.spv"));
+		shaderStageCreateInfo.module = _device.createShaderModule(VksUtil::readFile("shaders/hex.comp.spv"));
 		shaderStageCreateInfo.pName = "main";
 
 		VkPushConstantRange push_constant;
 		push_constant.offset = 0;
-		push_constant.size = sizeof(MeshPushConstants);
+		push_constant.size = sizeof(HexPushConstants);
 		push_constant.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
 		/*
         The pipeline layout allows the pipeline to access descriptor sets.
@@ -379,4 +383,4 @@ class RayMarchPipeline : public IRenderPipeline
 
 };
 
-#endif //_RAYMARCH_PIPELINE_H_
+#endif //_COMPUTE_PIPELINE_H_

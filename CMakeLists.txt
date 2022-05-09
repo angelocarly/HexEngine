@@ -2,7 +2,7 @@
 
 # Project definition
 cmake_minimum_required(VERSION 3.1)
-project(VulkanEngine VERSION 0.1.0)
+project(HexEngine VERSION 0.1.0)
 
 # Source files
 set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
@@ -49,10 +49,10 @@ add_custom_target(
 add_dependencies(${PROJECT_NAME} Shaders)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:VulkanEngine>/shaders/"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:HexEngine>/shaders/"
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_BINARY_DIR}/shaders"
-        "$<TARGET_FILE_DIR:VulkanEngine>/shaders"
+        "$<TARGET_FILE_DIR:HexEngine>/shaders"
         )
 
 ### External dependencies
@@ -70,7 +70,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 
 # Vulkan
 find_package(Vulkan REQUIRED)
-target_link_libraries(VulkanEngine PUBLIC Vulkan::Vulkan)
+target_link_libraries(HexEngine PUBLIC Vulkan::Vulkan)
 #target_link_libraries(tests PUBLIC Vulkan::Vulkan)
 
 # GLFW

@@ -1662,8 +1662,8 @@ CompareWithCurrentState	src/imgui/imgui.cpp	/^void ImGuiStackSizes::CompareWithC
 CompareWithSortSpecs	src/imgui/imgui_demo.cpp	/^    static int IMGUI_CDECL CompareWithSortSpecs(const void* lhs, const void* rhs)$/;"	f	struct:__anonecc473760111::MyItem	typeref:typename:int IMGUI_CDECL	file:
 ComputeManager	src/core/engine/compute_manager.h	/^	ComputeManager(VksDevice& device)$/;"	f	class:ComputeManager
 ComputeManager	src/core/engine/compute_manager.h	/^class ComputeManager$/;"	c
-ComputePipeline	src/core/graphics/compute_pipeline.h	/^	ComputePipeline(VksDevice& device, VksSwapChain& swapChain, VkDescriptorPool& descriptorPool)$/;"	f	class:ComputePipeline
-ComputePipeline	src/core/graphics/compute_pipeline.h	/^class ComputePipeline : public IRenderPipeline$/;"	c
+HexPipeline	src/core/graphics/compute_pipeline.h	/^	HexPipeline(VksDevice& device, VksSwapChain& swapChain, VkDescriptorPool& descriptorPool)$/;"	f	class:HexPipeline
+HexPipeline	src/core/graphics/compute_pipeline.h	/^class HexPipeline : public IRenderPipeline$/;"	c
 ConfigData	src/imgui/imgui.h	/^    ImVector<ImFontConfig>      ConfigData;         \/\/ Configuration data$/;"	m	struct:ImFontAtlas	typeref:typename:ImVector<ImFontConfig>
 ConfigData	src/imgui/imgui.h	/^    const ImFontConfig*         ConfigData;         \/\/ 4-8   \/\/ in  \/\/            \/\/ Poi/;"	m	struct:ImFont	typeref:typename:const ImFontConfig *
 ConfigDataCount	src/imgui/imgui.h	/^    short                       ConfigDataCount;    \/\/ 2     \/\/ in  \/\/ ~ 1        \/\/ Num/;"	m	struct:ImFont	typeref:typename:short
@@ -4198,7 +4198,7 @@ HASH_NUM_VALUES	lib/lodepng/lodepng.cpp	/^static const unsigned HASH_NUM_VALUES 
 HAVE_WINAPIFAMILY	lib/glad/src/glad.c	/^    #define HAVE_WINAPIFAMILY /;"	d	file:
 HAVE_WINAPIFAMILY	lib/glad/src/glad.c	/^  #define HAVE_WINAPIFAMILY /;"	d	file:
 HEIGHT	src/app.hpp	/^const uint32_t HEIGHT = 900;$/;"	v	typeref:typename:const uint32_t
-HEIGHT	src/core/graphics/compute_pipeline.h	/^	const int HEIGHT = 900;$/;"	m	class:ComputePipeline	typeref:typename:const int
+HEIGHT	src/core/graphics/compute_pipeline.h	/^	const int HEIGHT = 900;$/;"	m	class:HexPipeline	typeref:typename:const int
 HEIGHT	src/core/graphics/move_pipeline.h	/^	const int HEIGHT = 900;$/;"	m	class:MovePipeline	typeref:typename:const int
 HEIGHT	src/core/graphics/raymarch_pipeline.h	/^	const int HEIGHT = 900;$/;"	m	class:RayMarchPipeline	typeref:typename:const int
 HEX	build/CMakeFiles/3.20.3/CompilerIdC/CMakeCCompilerId.c	/^#define HEX(/;"	d	file:
@@ -5887,12 +5887,12 @@ MenusIdSubmittedThisFrame	src/imgui/imgui_internal.h	/^    ImVector<ImGuiID>    
 Merge	src/imgui/imgui_draw.cpp	/^void ImDrawListSplitter::Merge(ImDrawList* draw_list)$/;"	f	class:ImDrawListSplitter	typeref:typename:void
 MergeGroup	src/imgui/imgui_tables.cpp	/^    struct MergeGroup$/;"	s	function:ImGui::TableMergeDrawChannels	file:
 MergeMode	src/imgui/imgui.h	/^    bool            MergeMode;              \/\/ false    \/\/ Merge into previous ImFont, so yo/;"	m	struct:ImFontConfig	typeref:typename:bool
-MeshPushConstants	src/core/graphics/compute_pipeline.h	/^	struct MeshPushConstants$/;"	s	class:ComputePipeline
-MeshPushConstants	src/core/graphics/move_pipeline.h	/^	struct MeshPushConstants$/;"	s	class:MovePipeline
-MeshPushConstants	src/core/graphics/raymarch_pipeline.h	/^	struct MeshPushConstants$/;"	s	class:RayMarchPipeline
-MeshPushConstants	src/core/graphics/render_pipeline.h	/^struct MeshPushConstants$/;"	s
-MeshPushConstants	src/core/graphics/screen_pipeline.h	/^struct MeshPushConstants$/;"	s
-MeshPushConstants	src/core/graphics/texture_pipeline.h	/^struct MeshPushConstants$/;"	s
+HexPushConstants	src/core/graphics/compute_pipeline.h	/^	struct HexPushConstants$/;"	s	class:HexPipeline
+HexPushConstants	src/core/graphics/move_pipeline.h	/^	struct HexPushConstants$/;"	s	class:MovePipeline
+HexPushConstants	src/core/graphics/raymarch_pipeline.h	/^	struct HexPushConstants$/;"	s	class:RayMarchPipeline
+HexPushConstants	src/core/graphics/render_pipeline.h	/^struct HexPushConstants$/;"	s
+HexPushConstants	src/core/graphics/screen_pipeline.h	/^struct HexPushConstants$/;"	s
+HexPushConstants	src/core/graphics/texture_pipeline.h	/^struct HexPushConstants$/;"	s
 MetricsActiveAllocations	src/imgui/imgui.h	/^    int         MetricsActiveAllocations;       \/\/ Number of active allocations, updated by Me/;"	m	struct:ImGuiIO	typeref:typename:int
 MetricsActiveWindows	src/imgui/imgui.h	/^    int         MetricsActiveWindows;           \/\/ Number of active windows$/;"	m	struct:ImGuiIO	typeref:typename:int
 MetricsHelpMarker	src/imgui/imgui.cpp	/^static void MetricsHelpMarker(const char* desc)$/;"	f	typeref:typename:void	file:
@@ -8308,14 +8308,14 @@ VulkanEngine	README.md	/^# VulkanEngine$/;"	c
 VulkanEngine	build/Makefile	/^VulkanEngine: cmake_check_build_system$/;"	t
 VulkanEngine/fast	build/Makefile	/^VulkanEngine\/fast:$/;"	t
 WIDTH	src/app.hpp	/^const uint32_t WIDTH = 1600;$/;"	v	typeref:typename:const uint32_t
-WIDTH	src/core/graphics/compute_pipeline.h	/^	const int WIDTH = 1600;$/;"	m	class:ComputePipeline	typeref:typename:const int
+WIDTH	src/core/graphics/compute_pipeline.h	/^	const int WIDTH = 1600;$/;"	m	class:HexPipeline	typeref:typename:const int
 WIDTH	src/core/graphics/move_pipeline.h	/^	const int WIDTH = 1600;$/;"	m	class:MovePipeline	typeref:typename:const int
 WIDTH	src/core/graphics/raymarch_pipeline.h	/^	const int WIDTH = 1600;$/;"	m	class:RayMarchPipeline	typeref:typename:const int
 WIN32_LEAN_AND_MEAN	src/imgui/imgui.cpp	/^#define WIN32_LEAN_AND_MEAN$/;"	d	file:
 WINDOWS_MOUSE_WHEEL_SCROLL_LOCK_TIMER	src/imgui/imgui.cpp	/^static const float WINDOWS_MOUSE_WHEEL_SCROLL_LOCK_TIMER    = 2.00f;    \/\/ Lock scrolled windo/;"	v	typeref:typename:const float	file:
 WINDOWS_RESIZE_FROM_EDGES_FEEDBACK_TIMER	src/imgui/imgui.cpp	/^static const float WINDOWS_RESIZE_FROM_EDGES_FEEDBACK_TIMER = 0.04f;    \/\/ Reduce visual noise/;"	v	typeref:typename:const float	file:
 WINDOWS_RESIZE_FROM_EDGES_HALF_THICKNESS	src/imgui/imgui.cpp	/^static const float WINDOWS_RESIZE_FROM_EDGES_HALF_THICKNESS = 4.0f;     \/\/ Extend outside and /;"	v	typeref:typename:const float	file:
-WORKGROUP_SIZE	src/core/graphics/compute_pipeline.h	/^	const int WORKGROUP_SIZE = 32;$/;"	m	class:ComputePipeline	typeref:typename:const int
+WORKGROUP_SIZE	src/core/graphics/compute_pipeline.h	/^	const int WORKGROUP_SIZE = 32;$/;"	m	class:HexPipeline	typeref:typename:const int
 WORKGROUP_SIZE	src/core/graphics/move_pipeline.h	/^	const int WORKGROUP_SIZE = 32;$/;"	m	class:MovePipeline	typeref:typename:const int
 WORKGROUP_SIZE	src/core/graphics/raymarch_pipeline.h	/^	const int WORKGROUP_SIZE = 32;$/;"	m	class:RayMarchPipeline	typeref:typename:const int
 WRITEBIT	lib/lodepng/lodepng.cpp	/^#define WRITEBIT(/;"	d	file:
@@ -8507,26 +8507,26 @@ _buttons	src/vks/vks_input.h	/^    int _buttons[GLFW_MOUSE_BUTTON_LAST];$/;"	m	c
 _buttonsBuffer	src/vks/vks_input.cpp	/^int VksInput::_buttonsBuffer[GLFW_MOUSE_BUTTON_LAST];$/;"	m	class:VksInput	typeref:typename:int[]
 _buttonsBuffer	src/vks/vks_input.h	/^    static int _buttonsBuffer[GLFW_MOUSE_BUTTON_LAST];$/;"	m	class:VksInput	typeref:typename:int[]
 _children	src/core/engine/octree.h	/^	OctreeNode* _children[8];$/;"	m	class:OctreeNode	typeref:typename:OctreeNode * [8]
-_computeQueue	src/core/graphics/compute_pipeline.h	/^	VkQueue _computeQueue;$/;"	m	class:ComputePipeline	typeref:typename:VkQueue
+_computeQueue	src/core/graphics/compute_pipeline.h	/^	VkQueue _computeQueue;$/;"	m	class:HexPipeline	typeref:typename:VkQueue
 _computeQueue	src/core/graphics/move_pipeline.h	/^	VkQueue _computeQueue;$/;"	m	class:MovePipeline	typeref:typename:VkQueue
 _computeQueue	src/core/graphics/raymarch_pipeline.h	/^	VkQueue _computeQueue;$/;"	m	class:RayMarchPipeline	typeref:typename:VkQueue
-_computeSampler	src/core/graphics/compute_pipeline.h	/^	VkSampler _computeSampler;$/;"	m	class:ComputePipeline	typeref:typename:VkSampler
+_computeSampler	src/core/graphics/compute_pipeline.h	/^	VkSampler _computeSampler;$/;"	m	class:HexPipeline	typeref:typename:VkSampler
 _computeSampler	src/core/graphics/move_pipeline.h	/^	VkSampler _computeSampler;$/;"	m	class:MovePipeline	typeref:typename:VkSampler
 _computeSampler	src/core/graphics/raymarch_pipeline.h	/^	VkSampler _computeSampler;$/;"	m	class:RayMarchPipeline	typeref:typename:VkSampler
-_computeTexture	src/core/graphics/compute_pipeline.h	/^	VkImage _computeTexture;$/;"	m	class:ComputePipeline	typeref:typename:VkImage
+_computeTexture	src/core/graphics/compute_pipeline.h	/^	VkImage _computeTexture;$/;"	m	class:HexPipeline	typeref:typename:VkImage
 _computeTexture	src/core/graphics/move_pipeline.h	/^	VkImage _computeTexture;$/;"	m	class:MovePipeline	typeref:typename:VkImage
 _computeTexture	src/core/graphics/raymarch_pipeline.h	/^	VkImage _computeTexture;$/;"	m	class:RayMarchPipeline	typeref:typename:VkImage
-_computeTextureMemory	src/core/graphics/compute_pipeline.h	/^	VkDeviceMemory _computeTextureMemory;$/;"	m	class:ComputePipeline	typeref:typename:VkDeviceMemory
+_computeTextureMemory	src/core/graphics/compute_pipeline.h	/^	VkDeviceMemory _computeTextureMemory;$/;"	m	class:HexPipeline	typeref:typename:VkDeviceMemory
 _computeTextureMemory	src/core/graphics/move_pipeline.h	/^	VkDeviceMemory _computeTextureMemory;$/;"	m	class:MovePipeline	typeref:typename:VkDeviceMemory
 _computeTextureMemory	src/core/graphics/raymarch_pipeline.h	/^	VkDeviceMemory _computeTextureMemory;$/;"	m	class:RayMarchPipeline	typeref:typename:VkDeviceMemory
 _configInfo	src/vks/vks_pipeline.h	/^    PipelineConfigInfo _configInfo;$/;"	m	class:vks::VksPipeline	typeref:typename:PipelineConfigInfo
-_currentCommandBuffer	src/core/graphics/compute_pipeline.h	/^	VkCommandBuffer _currentCommandBuffer;$/;"	m	class:ComputePipeline	typeref:typename:VkCommandBuffer
+_currentCommandBuffer	src/core/graphics/compute_pipeline.h	/^	VkCommandBuffer _currentCommandBuffer;$/;"	m	class:HexPipeline	typeref:typename:VkCommandBuffer
 _currentCommandBuffer	src/core/graphics/move_pipeline.h	/^	VkCommandBuffer _currentCommandBuffer;$/;"	m	class:MovePipeline	typeref:typename:VkCommandBuffer
 _currentCommandBuffer	src/core/graphics/raymarch_pipeline.h	/^	VkCommandBuffer _currentCommandBuffer;$/;"	m	class:RayMarchPipeline	typeref:typename:VkCommandBuffer
 _currentCommandBuffer	src/core/graphics/render_pipeline.h	/^	VkCommandBuffer* _currentCommandBuffer;$/;"	m	class:BaseRenderPipeline	typeref:typename:VkCommandBuffer *
 _currentCommandBuffer	src/core/graphics/screen_pipeline.h	/^	VkCommandBuffer* _currentCommandBuffer;$/;"	m	class:ScreenRenderPipeline	typeref:typename:VkCommandBuffer *
 _currentCommandBuffer	src/core/graphics/texture_pipeline.h	/^	VkCommandBuffer* _currentCommandBuffer;$/;"	m	class:TextureRenderPipeline	typeref:typename:VkCommandBuffer *
-_currentFrame	src/core/graphics/compute_pipeline.h	/^	uint32_t _currentFrame;$/;"	m	class:ComputePipeline	typeref:typename:uint32_t
+_currentFrame	src/core/graphics/compute_pipeline.h	/^	uint32_t _currentFrame;$/;"	m	class:HexPipeline	typeref:typename:uint32_t
 _currentFrame	src/core/graphics/move_pipeline.h	/^	uint32_t _currentFrame;$/;"	m	class:MovePipeline	typeref:typename:uint32_t
 _currentFrame	src/core/graphics/raymarch_pipeline.h	/^	uint32_t _currentFrame;$/;"	m	class:RayMarchPipeline	typeref:typename:uint32_t
 _currentFrame	src/core/graphics/render_pipeline.h	/^	int _currentFrame = -1;$/;"	m	class:BaseRenderPipeline	typeref:typename:int
@@ -8535,17 +8535,17 @@ _currentFrame	src/core/graphics/texture_pipeline.h	/^	int _currentFrame = -1;$/;
 _currentModel	src/core/graphics/render_pipeline.h	/^	vks::VksModel* _currentModel;$/;"	m	class:BaseRenderPipeline	typeref:typename:vks::VksModel *
 _currentModel	src/core/graphics/screen_pipeline.h	/^	vks::VksModel* _currentModel;$/;"	m	class:ScreenRenderPipeline	typeref:typename:vks::VksModel *
 _currentModel	src/core/graphics/texture_pipeline.h	/^	vks::VksModel* _currentModel;$/;"	m	class:TextureRenderPipeline	typeref:typename:vks::VksModel *
-_descriptorPool	src/core/graphics/compute_pipeline.h	/^	VkDescriptorPool& _descriptorPool;$/;"	m	class:ComputePipeline	typeref:typename:VkDescriptorPool &
+_descriptorPool	src/core/graphics/compute_pipeline.h	/^	VkDescriptorPool& _descriptorPool;$/;"	m	class:HexPipeline	typeref:typename:VkDescriptorPool &
 _descriptorPool	src/core/graphics/move_pipeline.h	/^	VkDescriptorPool& _descriptorPool;$/;"	m	class:MovePipeline	typeref:typename:VkDescriptorPool &
 _descriptorPool	src/core/graphics/raymarch_pipeline.h	/^	VkDescriptorPool& _descriptorPool;$/;"	m	class:RayMarchPipeline	typeref:typename:VkDescriptorPool &
 _descriptorPool	src/core/graphics/render_pipeline.h	/^	VkDescriptorPool& _descriptorPool;$/;"	m	class:BaseRenderPipeline	typeref:typename:VkDescriptorPool &
 _descriptorPool	src/core/graphics/screen_pipeline.h	/^	VkDescriptorPool& _descriptorPool;$/;"	m	class:ScreenRenderPipeline	typeref:typename:VkDescriptorPool &
 _descriptorPool	src/core/graphics/texture_pipeline.h	/^	VkDescriptorPool& _descriptorPool;$/;"	m	class:TextureRenderPipeline	typeref:typename:VkDescriptorPool &
-_descriptorSet	src/core/graphics/compute_pipeline.h	/^	VkDescriptorSet _descriptorSet;$/;"	m	class:ComputePipeline	typeref:typename:VkDescriptorSet
+_descriptorSet	src/core/graphics/compute_pipeline.h	/^	VkDescriptorSet _descriptorSet;$/;"	m	class:HexPipeline	typeref:typename:VkDescriptorSet
 _descriptorSet	src/core/graphics/move_pipeline.h	/^	VkDescriptorSet _descriptorSet;$/;"	m	class:MovePipeline	typeref:typename:VkDescriptorSet
 _descriptorSet	src/core/graphics/raymarch_pipeline.h	/^	VkDescriptorSet _descriptorSet;$/;"	m	class:RayMarchPipeline	typeref:typename:VkDescriptorSet
 _device	src/core/engine/compute_manager.h	/^	VksDevice& _device;$/;"	m	class:ComputeManager	typeref:typename:VksDevice &
-_device	src/core/graphics/compute_pipeline.h	/^	VksDevice& _device;$/;"	m	class:ComputePipeline	typeref:typename:VksDevice &
+_device	src/core/graphics/compute_pipeline.h	/^	VksDevice& _device;$/;"	m	class:HexPipeline	typeref:typename:VksDevice &
 _device	src/core/graphics/move_pipeline.h	/^	VksDevice& _device;$/;"	m	class:MovePipeline	typeref:typename:VksDevice &
 _device	src/core/graphics/raymarch_pipeline.h	/^	VksDevice& _device;$/;"	m	class:RayMarchPipeline	typeref:typename:VksDevice &
 _device	src/core/graphics/render_pipeline.h	/^	VksDevice& _device;$/;"	m	class:BaseRenderPipeline	typeref:typename:VksDevice &
@@ -8555,10 +8555,10 @@ _device	src/vks/vks_model.h	/^    VksDevice &_device;$/;"	m	class:vks::VksModel	
 _entities	src/core/engine/world.h	/^	std::list<Entity> _entities;$/;"	m	class:World	typeref:typename:std::list<Entity>
 _forward	src/core/camera.h	/^	glm::vec3 _forward = glm::vec3();$/;"	m	class:Camera	typeref:typename:glm::vec3
 _grow_capacity	src/imgui/imgui.h	/^    inline int          _grow_capacity(int sz) const        { int new_capacity = Capacity ? (Cap/;"	f	struct:ImVector	typeref:typename:int
-_imageLayout	src/core/graphics/compute_pipeline.h	/^	VkImageLayout _imageLayout;$/;"	m	class:ComputePipeline	typeref:typename:VkImageLayout
+_imageLayout	src/core/graphics/compute_pipeline.h	/^	VkImageLayout _imageLayout;$/;"	m	class:HexPipeline	typeref:typename:VkImageLayout
 _imageLayout	src/core/graphics/move_pipeline.h	/^	VkImageLayout _imageLayout;$/;"	m	class:MovePipeline	typeref:typename:VkImageLayout
 _imageLayout	src/core/graphics/raymarch_pipeline.h	/^	VkImageLayout _imageLayout;$/;"	m	class:RayMarchPipeline	typeref:typename:VkImageLayout
-_imageView	src/core/graphics/compute_pipeline.h	/^	VkImageView _imageView;$/;"	m	class:ComputePipeline	typeref:typename:VkImageView
+_imageView	src/core/graphics/compute_pipeline.h	/^	VkImageView _imageView;$/;"	m	class:HexPipeline	typeref:typename:VkImageView
 _imageView	src/core/graphics/move_pipeline.h	/^	VkImageView _imageView;$/;"	m	class:MovePipeline	typeref:typename:VkImageView
 _imageView	src/core/graphics/raymarch_pipeline.h	/^	VkImageView _imageView;$/;"	m	class:RayMarchPipeline	typeref:typename:VkImageView
 _indexBuffer	src/vks/vks_model.h	/^    VkBuffer _indexBuffer;$/;"	m	class:vks::VksModel	typeref:typename:VkBuffer
@@ -8569,7 +8569,7 @@ _keys	src/vks/vks_input.h	/^    static bool _keys[GLFW_KEY_LAST];$/;"	m	class:Vk
 _mModel	src/core/camera.h	/^	glm::mat4 _mModel;$/;"	m	class:Camera	typeref:typename:glm::mat4
 _mProj	src/core/camera.h	/^	glm::mat4 _mProj;$/;"	m	class:Camera	typeref:typename:glm::mat4
 _mView	src/core/camera.h	/^	glm::mat4 _mView;$/;"	m	class:Camera	typeref:typename:glm::mat4
-_miplevels	src/core/graphics/compute_pipeline.h	/^	VkSamplerMipmapMode _miplevels;$/;"	m	class:ComputePipeline	typeref:typename:VkSamplerMipmapMode
+_miplevels	src/core/graphics/compute_pipeline.h	/^	VkSamplerMipmapMode _miplevels;$/;"	m	class:HexPipeline	typeref:typename:VkSamplerMipmapMode
 _miplevels	src/core/graphics/move_pipeline.h	/^	VkSamplerMipmapMode _miplevels;$/;"	m	class:MovePipeline	typeref:typename:VkSamplerMipmapMode
 _miplevels	src/core/graphics/raymarch_pipeline.h	/^	VkSamplerMipmapMode _miplevels;$/;"	m	class:RayMarchPipeline	typeref:typename:VkSamplerMipmapMode
 _mouseDelta	src/vks/vks_input.h	/^    glm::vec2 _mouseDelta;$/;"	m	class:VksInput	typeref:typename:glm::vec2
@@ -8592,19 +8592,19 @@ _rotation	src/core/camera.h	/^	glm::quat _rotation;$/;"	m	class:Camera	typeref:t
 _scale	src/core/engine/game_entity.h	/^	glm::vec3 _scale = glm::vec3(1);$/;"	m	class:Entity	typeref:typename:glm::vec3
 _screenModel	src/core/graphics/render_pipeline.h	/^	vks::VksModel* _screenModel;$/;"	m	class:BaseRenderPipeline	typeref:typename:vks::VksModel *
 _size	src/core/engine/octree.h	/^	glm::vec3 _size;$/;"	m	class:OctreeNode	typeref:typename:glm::vec3
-_swapChain	src/core/graphics/compute_pipeline.h	/^	VksSwapChain& _swapChain;$/;"	m	class:ComputePipeline	typeref:typename:VksSwapChain &
+_swapChain	src/core/graphics/compute_pipeline.h	/^	VksSwapChain& _swapChain;$/;"	m	class:HexPipeline	typeref:typename:VksSwapChain &
 _swapChain	src/core/graphics/move_pipeline.h	/^	VksSwapChain& _swapChain;$/;"	m	class:MovePipeline	typeref:typename:VksSwapChain &
 _swapChain	src/core/graphics/raymarch_pipeline.h	/^	VksSwapChain& _swapChain;$/;"	m	class:RayMarchPipeline	typeref:typename:VksSwapChain &
 _swapChain	src/core/graphics/render_pipeline.h	/^	VksSwapChain& _swapChain;$/;"	m	class:BaseRenderPipeline	typeref:typename:VksSwapChain &
 _swapChain	src/core/graphics/screen_pipeline.h	/^	VksSwapChain& _swapChain;$/;"	m	class:ScreenRenderPipeline	typeref:typename:VksSwapChain &
 _swapChain	src/core/graphics/texture_pipeline.h	/^	VksSwapChain& _swapChain;$/;"	m	class:TextureRenderPipeline	typeref:typename:VksSwapChain &
-_uniformBuffers	src/core/graphics/compute_pipeline.h	/^	std::vector<VkBuffer> _uniformBuffers;$/;"	m	class:ComputePipeline	typeref:typename:std::vector<VkBuffer>
+_uniformBuffers	src/core/graphics/compute_pipeline.h	/^	std::vector<VkBuffer> _uniformBuffers;$/;"	m	class:HexPipeline	typeref:typename:std::vector<VkBuffer>
 _uniformBuffers	src/core/graphics/move_pipeline.h	/^	std::vector<VkBuffer> _uniformBuffers;$/;"	m	class:MovePipeline	typeref:typename:std::vector<VkBuffer>
 _uniformBuffers	src/core/graphics/raymarch_pipeline.h	/^	std::vector<VkBuffer> _uniformBuffers;$/;"	m	class:RayMarchPipeline	typeref:typename:std::vector<VkBuffer>
 _uniformBuffers	src/core/graphics/render_pipeline.h	/^	std::vector<VkBuffer> _uniformBuffers;$/;"	m	class:BaseRenderPipeline	typeref:typename:std::vector<VkBuffer>
 _uniformBuffers	src/core/graphics/screen_pipeline.h	/^	std::vector<VkBuffer> _uniformBuffers;$/;"	m	class:ScreenRenderPipeline	typeref:typename:std::vector<VkBuffer>
 _uniformBuffers	src/core/graphics/texture_pipeline.h	/^	std::vector<VkBuffer> _uniformBuffers;$/;"	m	class:TextureRenderPipeline	typeref:typename:std::vector<VkBuffer>
-_uniformBuffersMemory	src/core/graphics/compute_pipeline.h	/^	std::vector<VkDeviceMemory> _uniformBuffersMemory;$/;"	m	class:ComputePipeline	typeref:typename:std::vector<VkDeviceMemory>
+_uniformBuffersMemory	src/core/graphics/compute_pipeline.h	/^	std::vector<VkDeviceMemory> _uniformBuffersMemory;$/;"	m	class:HexPipeline	typeref:typename:std::vector<VkDeviceMemory>
 _uniformBuffersMemory	src/core/graphics/move_pipeline.h	/^	std::vector<VkDeviceMemory> _uniformBuffersMemory;$/;"	m	class:MovePipeline	typeref:typename:std::vector<VkDeviceMemory>
 _uniformBuffersMemory	src/core/graphics/raymarch_pipeline.h	/^	std::vector<VkDeviceMemory> _uniformBuffersMemory;$/;"	m	class:RayMarchPipeline	typeref:typename:std::vector<VkDeviceMemory>
 _uniformBuffersMemory	src/core/graphics/render_pipeline.h	/^	std::vector<VkDeviceMemory> _uniformBuffersMemory;$/;"	m	class:BaseRenderPipeline	typeref:typename:std::vector<VkDeviceMemory>
@@ -8770,7 +8770,7 @@ backtraceGraph	build/.cmake/api/v1/reply/target-lodepng-Debug-4b9c7aec85724787cb
 backtraces	build/.cmake/api/v1/reply/target-VulkanEngine-Debug-4806520a9bf9ee914ad3.json	/^				"backtraces" : $/;"	a	object:compileGroups.0.languageStandard
 baseline_y_delta	src/imgui/imstb_textedit.h	/^   float baseline_y_delta;  \/\/ position of baseline relative to previous row's baseline$/;"	m	struct:__anonb965c0a50408	typeref:typename:float
 basepipeline	src/core/game.hpp	/^	BaseRenderPipeline* basepipeline = nullptr;$/;"	m	class:Game	typeref:typename:BaseRenderPipeline *
-begin	src/core/graphics/compute_pipeline.h	/^	void begin(VkCommandBuffer& commandBuffer, int frame) override$/;"	f	class:ComputePipeline	typeref:typename:void
+begin	src/core/graphics/compute_pipeline.h	/^	void begin(VkCommandBuffer& commandBuffer, int frame) override$/;"	f	class:HexPipeline	typeref:typename:void
 begin	src/core/graphics/move_pipeline.h	/^	void begin(VkCommandBuffer& commandBuffer, int frame) override$/;"	f	class:MovePipeline	typeref:typename:void
 begin	src/core/graphics/raymarch_pipeline.h	/^	void begin(VkCommandBuffer& commandBuffer, int frame) override$/;"	f	class:RayMarchPipeline	typeref:typename:void
 begin	src/core/graphics/render_pipeline.h	/^	void begin(VkCommandBuffer& commandBuffer, int frame) override$/;"	f	class:BaseRenderPipeline	typeref:typename:void
@@ -9010,13 +9010,13 @@ createCommandBuffers	src/core/game.hpp	/^	void createCommandBuffers()$/;"	f	clas
 createCommandPool	src/vks/vks_device.cpp	/^	void VksDevice::createCommandPool()$/;"	f	class:vks::VksDevice	typeref:typename:void
 createDepthResources	src/vks/vks_swap_chain.cpp	/^    void VksSwapChain::createDepthResources()$/;"	f	class:vks::VksSwapChain	typeref:typename:void
 createDescriptorPool	src/core/game.hpp	/^	void createDescriptorPool()$/;"	f	class:Game	typeref:typename:void
-createDescriptorSetLayout	src/core/graphics/compute_pipeline.h	/^	void createDescriptorSetLayout()$/;"	f	class:ComputePipeline	typeref:typename:void
+createDescriptorSetLayout	src/core/graphics/compute_pipeline.h	/^	void createDescriptorSetLayout()$/;"	f	class:HexPipeline	typeref:typename:void
 createDescriptorSetLayout	src/core/graphics/move_pipeline.h	/^	void createDescriptorSetLayout()$/;"	f	class:MovePipeline	typeref:typename:void
 createDescriptorSetLayout	src/core/graphics/raymarch_pipeline.h	/^	void createDescriptorSetLayout()$/;"	f	class:RayMarchPipeline	typeref:typename:void
 createDescriptorSetLayout	src/core/graphics/render_pipeline.h	/^	void createDescriptorSetLayout()$/;"	f	class:BaseRenderPipeline	typeref:typename:void
 createDescriptorSetLayout	src/core/graphics/screen_pipeline.h	/^	void createDescriptorSetLayout()$/;"	f	class:ScreenRenderPipeline	typeref:typename:void
 createDescriptorSetLayout	src/core/graphics/texture_pipeline.h	/^	void createDescriptorSetLayout()$/;"	f	class:TextureRenderPipeline	typeref:typename:void
-createDescriptorSets	src/core/graphics/compute_pipeline.h	/^	void createDescriptorSets()$/;"	f	class:ComputePipeline	typeref:typename:void
+createDescriptorSets	src/core/graphics/compute_pipeline.h	/^	void createDescriptorSets()$/;"	f	class:HexPipeline	typeref:typename:void
 createDescriptorSets	src/core/graphics/move_pipeline.h	/^	void createDescriptorSets()$/;"	f	class:MovePipeline	typeref:typename:void
 createDescriptorSets	src/core/graphics/raymarch_pipeline.h	/^	void createDescriptorSets()$/;"	f	class:RayMarchPipeline	typeref:typename:void
 createDescriptorSets	src/core/graphics/render_pipeline.h	/^	void createDescriptorSets()$/;"	f	class:BaseRenderPipeline	typeref:typename:void
@@ -9028,13 +9028,13 @@ createImageViews	src/vks/vks_swap_chain.cpp	/^    void VksSwapChain::createImage
 createImageWithInfo	src/vks/vks_device.cpp	/^	void VksDevice::createImageWithInfo($/;"	f	class:vks::VksDevice	typeref:typename:void
 createInstance	src/vks/vks_device.cpp	/^	void VksDevice::createInstance()$/;"	f	class:vks::VksDevice	typeref:typename:void
 createLogicalDevice	src/vks/vks_device.cpp	/^	void VksDevice::createLogicalDevice()$/;"	f	class:vks::VksDevice	typeref:typename:void
-createPipeline	src/core/graphics/compute_pipeline.h	/^	void createPipeline()$/;"	f	class:ComputePipeline	typeref:typename:void
+createPipeline	src/core/graphics/compute_pipeline.h	/^	void createPipeline()$/;"	f	class:HexPipeline	typeref:typename:void
 createPipeline	src/core/graphics/move_pipeline.h	/^	void createPipeline()$/;"	f	class:MovePipeline	typeref:typename:void
 createPipeline	src/core/graphics/raymarch_pipeline.h	/^	void createPipeline()$/;"	f	class:RayMarchPipeline	typeref:typename:void
 createPipeline	src/core/graphics/render_pipeline.h	/^	void createPipeline()$/;"	f	class:BaseRenderPipeline	typeref:typename:void
 createPipeline	src/core/graphics/screen_pipeline.h	/^	void createPipeline()$/;"	f	class:ScreenRenderPipeline	typeref:typename:void
 createPipeline	src/core/graphics/texture_pipeline.h	/^	void createPipeline()$/;"	f	class:TextureRenderPipeline	typeref:typename:void
-createPipelineLayout	src/core/graphics/compute_pipeline.h	/^	void createPipelineLayout()$/;"	f	class:ComputePipeline	typeref:typename:void
+createPipelineLayout	src/core/graphics/compute_pipeline.h	/^	void createPipelineLayout()$/;"	f	class:HexPipeline	typeref:typename:void
 createPipelineLayout	src/core/graphics/move_pipeline.h	/^	void createPipelineLayout()$/;"	f	class:MovePipeline	typeref:typename:void
 createPipelineLayout	src/core/graphics/raymarch_pipeline.h	/^	void createPipelineLayout()$/;"	f	class:RayMarchPipeline	typeref:typename:void
 createPipelineLayout	src/core/graphics/render_pipeline.h	/^	void createPipelineLayout()$/;"	f	class:BaseRenderPipeline	typeref:typename:void
@@ -9046,7 +9046,7 @@ createShaderModule	src/vks/vks_pipeline.cpp	/^    VkShaderModule VksPipeline::cr
 createSurface	src/vks/vks_device.cpp	/^	void VksDevice::createSurface()$/;"	f	class:vks::VksDevice	typeref:typename:void
 createSwapChain	src/vks/vks_swap_chain.cpp	/^    void VksSwapChain::createSwapChain(VkExtent2D baseExtent)$/;"	f	class:vks::VksSwapChain	typeref:typename:void
 createSyncObject	src/vks/vks_swap_chain.cpp	/^    void VksSwapChain::createSyncObject()$/;"	f	class:vks::VksSwapChain	typeref:typename:void
-createTexture	src/core/graphics/compute_pipeline.h	/^	void createTexture(VkFormat format)$/;"	f	class:ComputePipeline	typeref:typename:void
+createTexture	src/core/graphics/compute_pipeline.h	/^	void createTexture(VkFormat format)$/;"	f	class:HexPipeline	typeref:typename:void
 createTexture	src/core/graphics/move_pipeline.h	/^	void createTexture(VkFormat format)$/;"	f	class:MovePipeline	typeref:typename:void
 createTexture	src/core/graphics/raymarch_pipeline.h	/^	void createTexture(VkFormat format)$/;"	f	class:RayMarchPipeline	typeref:typename:void
 createTextureImage	src/core/graphics/render_pipeline.h	/^	void createTextureImage(VksDevice &device)$/;"	f	class:BaseRenderPipeline	typeref:typename:void
@@ -9147,7 +9147,7 @@ descriptorPool	src/core/game.hpp	/^	VkDescriptorPool descriptorPool;$/;"	m	class
 descriptorPoolCreateInfo	src/vks/VulkanInitializers.h	/^    inline VkDescriptorPoolCreateInfo descriptorPoolCreateInfo($/;"	f	namespace:vks::initializers	typeref:typename:VkDescriptorPoolCreateInfo
 descriptorPoolSize	src/vks/VulkanInitializers.h	/^    inline VkDescriptorPoolSize descriptorPoolSize($/;"	f	namespace:vks::initializers	typeref:typename:VkDescriptorPoolSize
 descriptorSetAllocateInfo	src/vks/VulkanInitializers.h	/^    inline VkDescriptorSetAllocateInfo descriptorSetAllocateInfo($/;"	f	namespace:vks::initializers	typeref:typename:VkDescriptorSetAllocateInfo
-descriptorSetLayout	src/core/graphics/compute_pipeline.h	/^	VkDescriptorSetLayout descriptorSetLayout;$/;"	m	class:ComputePipeline	typeref:typename:VkDescriptorSetLayout
+descriptorSetLayout	src/core/graphics/compute_pipeline.h	/^	VkDescriptorSetLayout descriptorSetLayout;$/;"	m	class:HexPipeline	typeref:typename:VkDescriptorSetLayout
 descriptorSetLayout	src/core/graphics/move_pipeline.h	/^	VkDescriptorSetLayout descriptorSetLayout;$/;"	m	class:MovePipeline	typeref:typename:VkDescriptorSetLayout
 descriptorSetLayout	src/core/graphics/raymarch_pipeline.h	/^	VkDescriptorSetLayout descriptorSetLayout;$/;"	m	class:RayMarchPipeline	typeref:typename:VkDescriptorSetLayout
 descriptorSetLayout	src/core/graphics/render_pipeline.h	/^	VkDescriptorSetLayout descriptorSetLayout;$/;"	m	class:BaseRenderPipeline	typeref:typename:VkDescriptorSetLayout
@@ -9240,7 +9240,7 @@ encode	lib/lodepng/lodepng.cpp	/^	unsigned encode(std::vector<unsigned char>& ou
 encode	lib/lodepng/lodepng.cpp	/^	unsigned encode(std::vector<unsigned char>& out,$/;"	f	namespace:lodepng	typeref:typename:unsigned
 encodeLZ77	lib/lodepng/lodepng.cpp	/^static unsigned encodeLZ77(uivector* out, Hash* hash,$/;"	f	typeref:typename:unsigned	file:
 encoder	lib/lodepng/lodepng.h	/^	LodePNGEncoderSettings encoder; \/*the encoding settings*\/$/;"	m	struct:LodePNGState	typeref:typename:LodePNGEncoderSettings
-end	src/core/graphics/compute_pipeline.h	/^	void end() override$/;"	f	class:ComputePipeline	typeref:typename:void
+end	src/core/graphics/compute_pipeline.h	/^	void end() override$/;"	f	class:HexPipeline	typeref:typename:void
 end	src/core/graphics/move_pipeline.h	/^	void end() override$/;"	f	class:MovePipeline	typeref:typename:void
 end	src/core/graphics/raymarch_pipeline.h	/^	void end() override$/;"	f	class:RayMarchPipeline	typeref:typename:void
 end	src/core/graphics/render_pipeline.h	/^	void end() override$/;"	f	class:BaseRenderPipeline	typeref:typename:void
@@ -9442,7 +9442,7 @@ getBindingDescriptions	src/vks/vks_model.h	/^        static std::vector<VkVertex
 getChildren	src/core/engine/octree.h	/^	OctreeNode** getChildren()$/;"	f	class:OctreeNode	typeref:typename:OctreeNode **
 getCommandPool	src/vks/vks_device.h	/^		VkCommandPool getCommandPool()$/;"	f	class:vks::VksDevice	typeref:typename:VkCommandPool
 getComputeQueue	src/vks/vks_device.h	/^		VkQueue getComputeQueue()$/;"	f	class:vks::VksDevice	typeref:typename:VkQueue
-getComputeTarget	src/core/graphics/compute_pipeline.h	/^	VkDescriptorImageInfo getComputeTarget()$/;"	f	class:ComputePipeline	typeref:typename:VkDescriptorImageInfo
+getComputeTarget	src/core/graphics/compute_pipeline.h	/^	VkDescriptorImageInfo getComputeTarget()$/;"	f	class:HexPipeline	typeref:typename:VkDescriptorImageInfo
 getComputeTarget	src/core/graphics/move_pipeline.h	/^	VkDescriptorImageInfo getComputeTarget()$/;"	f	class:MovePipeline	typeref:typename:VkDescriptorImageInfo
 getComputeTarget	src/core/graphics/raymarch_pipeline.h	/^	VkDescriptorImageInfo getComputeTarget()$/;"	f	class:RayMarchPipeline	typeref:typename:VkDescriptorImageInfo
 getCurrentFrame	src/vks/vks_swap_chain.h	/^        int getCurrentFrame()$/;"	f	class:vks::VksSwapChain	typeref:typename:int
@@ -9471,7 +9471,7 @@ getPosition	src/core/engine/octree.h	/^	glm::vec3 getPosition()$/;"	f	class:Octr
 getPresentQueue	src/vks/vks_device.h	/^		VkQueue getPresentQueue()$/;"	f	class:vks::VksDevice	typeref:typename:VkQueue
 getRenderPass	src/vks/vks_swap_chain.h	/^        VkRenderPass getRenderPass()$/;"	f	class:vks::VksSwapChain	typeref:typename:VkRenderPass
 getRequiredExtensions	src/vks/vks_device.cpp	/^	std::vector<const char*> VksDevice::getRequiredExtensions()$/;"	f	class:vks::VksDevice	typeref:typename:std::vector<const char * >
-getResultImage	src/core/graphics/compute_pipeline.h	/^	VkImage getResultImage()$/;"	f	class:ComputePipeline	typeref:typename:VkImage
+getResultImage	src/core/graphics/compute_pipeline.h	/^	VkImage getResultImage()$/;"	f	class:HexPipeline	typeref:typename:VkImage
 getResultImage	src/core/graphics/move_pipeline.h	/^	VkImage getResultImage()$/;"	f	class:MovePipeline	typeref:typename:VkImage
 getResultImage	src/core/graphics/raymarch_pipeline.h	/^	VkImage getResultImage()$/;"	f	class:RayMarchPipeline	typeref:typename:VkImage
 getRight	src/core/camera.h	/^	glm::vec3 getRight()$/;"	f	class:Camera	typeref:typename:glm::vec3
@@ -12843,7 +12843,7 @@ info_version_internal	build/CMakeFiles/3.21.0/CompilerIdCXX/CMakeCXXCompilerId.c
 info_version_internal	build/CMakeFiles/3.21.0/CompilerIdCXX/CMakeCXXCompilerId.cpp	/^char const* info_version_internal = "INFO" ":" "compiler_version_internal[" COMPILER_VERSION_INT/;"	v	typeref:typename:char const *
 init	src/core/engine/compute_manager.h	/^	void init(RayMarchPipeline& pipeline, MovePipeline& movePipeline)$/;"	f	class:ComputeManager	typeref:typename:void
 init	src/core/game.hpp	/^	void init()$/;"	f	class:Game	typeref:typename:void
-init	src/core/graphics/compute_pipeline.h	/^	void init()$/;"	f	class:ComputePipeline	typeref:typename:void
+init	src/core/graphics/compute_pipeline.h	/^	void init()$/;"	f	class:HexPipeline	typeref:typename:void
 init	src/core/graphics/move_pipeline.h	/^	void init()$/;"	f	class:MovePipeline	typeref:typename:void
 init	src/core/graphics/raymarch_pipeline.h	/^	void init()$/;"	f	class:RayMarchPipeline	typeref:typename:void
 init	src/core/graphics/render_pipeline.h	/^	void init()$/;"	f	class:BaseRenderPipeline	typeref:typename:void
@@ -13158,7 +13158,7 @@ lodepng_zlib_compress	lib/lodepng/lodepng.cpp	/^unsigned lodepng_zlib_compress(u
 lodepng_zlib_decompress	lib/lodepng/lodepng.cpp	/^unsigned lodepng_zlib_decompress(unsigned char** out, size_t* outsize, const unsigned char* in,$/;"	f	typeref:typename:unsigned
 lodepng_zlib_decompressv	lib/lodepng/lodepng.cpp	/^static unsigned lodepng_zlib_decompressv(ucvector* out,$/;"	f	typeref:typename:unsigned	file:
 look	test/vks/vks_camera.cpp	/^    glm::vec3 look = camera.getForward();$/;"	v	typeref:typename:glm::vec3
-lowqualitypipeline	src/core/game.hpp	/^	ComputePipeline* lowqualitypipeline = nullptr;$/;"	m	class:Game	typeref:typename:ComputePipeline *
+lowqualitypipeline	src/core/game.hpp	/^	HexPipeline* lowqualitypipeline = nullptr;$/;"	m	class:Game	typeref:typename:HexPipeline *
 lpal	lib/stb/stb_image.h	/^    stbi_uc lpal[256][4];$/;"	m	struct:__anon16aecc041308	typeref:typename:stbi_uc[256][4]
 ma	lib/stb/stb_image.h	/^    unsigned int mr,mg,mb,ma, all_a;$/;"	m	struct:__anon16aecc041008	typeref:typename:unsigned int
 main	build/CMakeFiles/3.20.3/CompilerIdC/CMakeCCompilerId.c	/^int main(argc, argv) int argc; char *argv[];$/;"	f
@@ -13228,9 +13228,9 @@ model	src/core/engine/game_entity.h	/^	vks::VksModel* model;$/;"	m	class:Entity	
 model	src/core/engine/graph.h	/^	vks::VksModel* model;$/;"	m	class:Graph	typeref:typename:vks::VksModel *
 model	src/core/engine/octree.h	/^	vks::VksModel* model;$/;"	m	class:Octree	typeref:typename:vks::VksModel *
 model	src/core/game.hpp	/^	VksModel model;$/;"	m	class:Game	typeref:typename:VksModel
-model	src/core/graphics/compute_pipeline.h	/^		glm::mat4 model;$/;"	m	struct:ComputePipeline::MeshPushConstants	typeref:typename:glm::mat4
-model	src/core/graphics/move_pipeline.h	/^		glm::mat4 model;$/;"	m	struct:MovePipeline::MeshPushConstants	typeref:typename:glm::mat4
-model	src/core/graphics/raymarch_pipeline.h	/^		glm::mat4 model;$/;"	m	struct:RayMarchPipeline::MeshPushConstants	typeref:typename:glm::mat4
+model	src/core/graphics/compute_pipeline.h	/^		glm::mat4 model;$/;"	m	struct:HexPipeline::HexPushConstants	typeref:typename:glm::mat4
+model	src/core/graphics/move_pipeline.h	/^		glm::mat4 model;$/;"	m	struct:MovePipeline::HexPushConstants	typeref:typename:glm::mat4
+model	src/core/graphics/raymarch_pipeline.h	/^		glm::mat4 model;$/;"	m	struct:RayMarchPipeline::HexPushConstants	typeref:typename:glm::mat4
 model	src/core/graphics/render_pipeline.h	/^	glm::mat4 model;$/;"	m	struct:UniformBufferObject	typeref:typename:glm::mat4
 model	src/core/graphics/screen_pipeline.h	/^	glm::mat4 model;$/;"	m	struct:UniformBufferObject	typeref:typename:glm::mat4
 model	src/core/graphics/texture_pipeline.h	/^	glm::mat4 model;$/;"	m	struct:UniformBufferObject	typeref:typename:glm::mat4
@@ -13704,13 +13704,13 @@ phys_x	lib/lodepng/lodepng.h	/^	unsigned phys_x; \/*pixels per unit in x directi
 phys_y	lib/lodepng/lodepng.h	/^	unsigned phys_y; \/*pixels per unit in y direction*\/$/;"	m	struct:LodePNGInfo	typeref:typename:unsigned
 physicalDevice	src/vks/vks_device.h	/^		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;$/;"	m	class:vks::VksDevice	typeref:typename:VkPhysicalDevice
 pickPhysicalDevice	src/vks/vks_device.cpp	/^	void VksDevice::pickPhysicalDevice()$/;"	f	class:vks::VksDevice	typeref:typename:void
-pipeline	src/core/graphics/compute_pipeline.h	/^	VkPipeline pipeline;$/;"	m	class:ComputePipeline	typeref:typename:VkPipeline
+pipeline	src/core/graphics/compute_pipeline.h	/^	VkPipeline pipeline;$/;"	m	class:HexPipeline	typeref:typename:VkPipeline
 pipeline	src/core/graphics/move_pipeline.h	/^	VkPipeline pipeline;$/;"	m	class:MovePipeline	typeref:typename:VkPipeline
 pipeline	src/core/graphics/raymarch_pipeline.h	/^	VkPipeline pipeline;$/;"	m	class:RayMarchPipeline	typeref:typename:VkPipeline
 pipeline	src/core/graphics/render_pipeline.h	/^	std::unique_ptr<VksPipeline> pipeline = nullptr;$/;"	m	class:BaseRenderPipeline	typeref:typename:std::unique_ptr<VksPipeline>
 pipeline	src/core/graphics/screen_pipeline.h	/^	std::unique_ptr<VksPipeline> pipeline = nullptr;$/;"	m	class:ScreenRenderPipeline	typeref:typename:std::unique_ptr<VksPipeline>
 pipeline	src/core/graphics/texture_pipeline.h	/^	std::unique_ptr<VksPipeline> pipeline = nullptr;$/;"	m	class:TextureRenderPipeline	typeref:typename:std::unique_ptr<VksPipeline>
-pipelineLayout	src/core/graphics/compute_pipeline.h	/^	VkPipelineLayout pipelineLayout;$/;"	m	class:ComputePipeline	typeref:typename:VkPipelineLayout
+pipelineLayout	src/core/graphics/compute_pipeline.h	/^	VkPipelineLayout pipelineLayout;$/;"	m	class:HexPipeline	typeref:typename:VkPipelineLayout
 pipelineLayout	src/core/graphics/move_pipeline.h	/^	VkPipelineLayout pipelineLayout;$/;"	m	class:MovePipeline	typeref:typename:VkPipelineLayout
 pipelineLayout	src/core/graphics/raymarch_pipeline.h	/^	VkPipelineLayout pipelineLayout;$/;"	m	class:RayMarchPipeline	typeref:typename:VkPipelineLayout
 pipelineLayout	src/core/graphics/render_pipeline.h	/^	VkPipelineLayout pipelineLayout;$/;"	m	class:BaseRenderPipeline	typeref:typename:VkPipelineLayout
@@ -13749,9 +13749,9 @@ projectIndex	build/.cmake/api/v1/reply/codemodel-v2-364eb179bb84a779b867.json	/^
 projectIndex	build/.cmake/api/v1/reply/codemodel-v2-364eb179bb84a779b867.json	/^					"projectIndex" : 0$/;"	n	object:configurations.0.targets.2
 projectIndex	build/.cmake/api/v1/reply/codemodel-v2-364eb179bb84a779b867.json	/^					"projectIndex" : 0$/;"	n	object:configurations.0.targets.3
 projectIndex	build/.cmake/api/v1/reply/codemodel-v2-364eb179bb84a779b867.json	/^					"projectIndex" : 0,$/;"	n	object:configurations.0.directories.0
-projection	src/core/graphics/compute_pipeline.h	/^		glm::mat4 projection;$/;"	m	struct:ComputePipeline::MeshPushConstants	typeref:typename:glm::mat4
-projection	src/core/graphics/move_pipeline.h	/^		glm::mat4 projection;$/;"	m	struct:MovePipeline::MeshPushConstants	typeref:typename:glm::mat4
-projection	src/core/graphics/raymarch_pipeline.h	/^		glm::mat4 projection;$/;"	m	struct:RayMarchPipeline::MeshPushConstants	typeref:typename:glm::mat4
+projection	src/core/graphics/compute_pipeline.h	/^		glm::mat4 projection;$/;"	m	struct:HexPipeline::HexPushConstants	typeref:typename:glm::mat4
+projection	src/core/graphics/move_pipeline.h	/^		glm::mat4 projection;$/;"	m	struct:MovePipeline::HexPushConstants	typeref:typename:glm::mat4
+projection	src/core/graphics/raymarch_pipeline.h	/^		glm::mat4 projection;$/;"	m	struct:RayMarchPipeline::HexPushConstants	typeref:typename:glm::mat4
 projects	build/.cmake/api/v1/reply/codemodel-v2-364eb179bb84a779b867.json	/^			"projects" : $/;"	a	object:configurations.0
 properties	build/.cmake/api/v1/reply/cache-v2-d8acb2d1019a906d10dd.json	/^			"properties" : $/;"	a	object:entries.0
 properties	build/.cmake/api/v1/reply/cache-v2-d8acb2d1019a906d10dd.json	/^			"properties" : $/;"	a	object:entries.1
@@ -14745,17 +14745,17 @@ textureSampler	src/core/graphics/render_pipeline.h	/^	VkSampler textureSampler;$
 textureSampler	src/core/graphics/screen_pipeline.h	/^	VkSampler textureSampler;$/;"	m	class:ScreenRenderPipeline	typeref:typename:VkSampler
 textureSampler	src/core/graphics/texture_pipeline.h	/^	VkSampler textureSampler;$/;"	m	class:TextureRenderPipeline	typeref:typename:VkSampler
 time	lib/lodepng/lodepng.h	/^	LodePNGTime time;$/;"	m	struct:LodePNGInfo	typeref:typename:LodePNGTime
-time	src/core/graphics/compute_pipeline.h	/^		float time;$/;"	m	struct:ComputePipeline::MeshPushConstants	typeref:typename:float
-time	src/core/graphics/move_pipeline.h	/^		float time;$/;"	m	struct:MovePipeline::MeshPushConstants	typeref:typename:float
-time	src/core/graphics/raymarch_pipeline.h	/^		float time;$/;"	m	struct:RayMarchPipeline::MeshPushConstants	typeref:typename:float
-time	src/core/graphics/render_pipeline.h	/^	float time;$/;"	m	struct:MeshPushConstants	typeref:typename:float
+time	src/core/graphics/compute_pipeline.h	/^		float time;$/;"	m	struct:HexPipeline::HexPushConstants	typeref:typename:float
+time	src/core/graphics/move_pipeline.h	/^		float time;$/;"	m	struct:MovePipeline::HexPushConstants	typeref:typename:float
+time	src/core/graphics/raymarch_pipeline.h	/^		float time;$/;"	m	struct:RayMarchPipeline::HexPushConstants	typeref:typename:float
+time	src/core/graphics/render_pipeline.h	/^	float time;$/;"	m	struct:HexPushConstants	typeref:typename:float
 time_defined	lib/lodepng/lodepng.h	/^	unsigned time_defined; \/*set to 1 to make the encoder generate a tIME chunk*\/$/;"	m	struct:LodePNGInfo	typeref:typename:unsigned
 todo	lib/stb/stb_image.h	/^    int restart_interval, todo;$/;"	m	struct:__anon16aecc040808	typeref:typename:int
 toolchains	build/.cmake/api/v1/reply/toolchains-v1-bb9217e6e04e40eba4a0.json	/^	"toolchains" : $/;"	a
 tq	lib/stb/stb_image.h	/^        int tq;$/;"	m	struct:__anon16aecc040808::__anon16aecc040908	typeref:typename:int
-transform	src/core/graphics/render_pipeline.h	/^	glm::mat4 transform;$/;"	m	struct:MeshPushConstants	typeref:typename:glm::mat4
-transform	src/core/graphics/screen_pipeline.h	/^	glm::mat4 transform;$/;"	m	struct:MeshPushConstants	typeref:typename:glm::mat4
-transform	src/core/graphics/texture_pipeline.h	/^	glm::mat4 transform;$/;"	m	struct:MeshPushConstants	typeref:typename:glm::mat4
+transform	src/core/graphics/render_pipeline.h	/^	glm::mat4 transform;$/;"	m	struct:HexPushConstants	typeref:typename:glm::mat4
+transform	src/core/graphics/screen_pipeline.h	/^	glm::mat4 transform;$/;"	m	struct:HexPushConstants	typeref:typename:glm::mat4
+transform	src/core/graphics/texture_pipeline.h	/^	glm::mat4 transform;$/;"	m	struct:HexPushConstants	typeref:typename:glm::mat4
 transitionImageLayout	src/core/graphics/screen_pipeline.h	/^	static void transitionImageLayout(VksDevice device, VkImage image, VkFormat format, VkImageLayo/;"	f	class:ScreenRenderPipeline	typeref:typename:void
 transitionImageLayout	src/core/graphics/texture_pipeline.h	/^	static void transitionImageLayout(VksDevice device, VkImage image, VkFormat format, VkImageLayo/;"	f	class:TextureRenderPipeline	typeref:typename:void
 transitionImageLayout	src/vks/vks_device.cpp	/^	void VksDevice::transitionImageLayout(VkImage image, VkImageLayout oldLayout, VkImageLayout new/;"	f	class:vks::VksDevice	typeref:typename:void
@@ -14896,7 +14896,7 @@ unknown_chunks_data	lib/lodepng/lodepng.h	/^	unsigned char* unknown_chunks_data[
 unknown_chunks_size	lib/lodepng/lodepng.h	/^	size_t unknown_chunks_size[3]; \/*size in bytes of the unknown chunks, given for protection*\/$/;"	m	struct:LodePNGInfo	typeref:typename:size_t[3]
 update	src/core/camera.h	/^	void update(float delta)$/;"	f	class:Camera	typeref:typename:void
 update	src/core/game.hpp	/^	void update(float delta)$/;"	f	class:Game	typeref:typename:void
-updateBuffers	src/core/graphics/compute_pipeline.h	/^	void updateBuffers(Camera camera) override$/;"	f	class:ComputePipeline	typeref:typename:void
+updateBuffers	src/core/graphics/compute_pipeline.h	/^	void updateBuffers(Camera camera) override$/;"	f	class:HexPipeline	typeref:typename:void
 updateBuffers	src/core/graphics/move_pipeline.h	/^	void updateBuffers(Camera camera) override$/;"	f	class:MovePipeline	typeref:typename:void
 updateBuffers	src/core/graphics/raymarch_pipeline.h	/^	void updateBuffers(Camera camera) override$/;"	f	class:RayMarchPipeline	typeref:typename:void
 updateBuffers	src/core/graphics/render_pipeline.h	/^	void updateBuffers(Camera camera) override$/;"	f	class:BaseRenderPipeline	typeref:typename:void
@@ -15199,9 +15199,9 @@ version	build/.cmake/api/v1/reply/index-2021-07-24T20-21-48-0338.json	/^		"versi
 version	build/.cmake/api/v1/reply/toolchains-v1-bb9217e6e04e40eba4a0.json	/^				"version" : "11.1.0"$/;"	s	object:toolchains.0.compiler
 version	build/.cmake/api/v1/reply/toolchains-v1-bb9217e6e04e40eba4a0.json	/^				"version" : "11.1.0"$/;"	s	object:toolchains.1.compiler
 version	build/.cmake/api/v1/reply/toolchains-v1-bb9217e6e04e40eba4a0.json	/^	"version" : $/;"	o
-view	src/core/graphics/compute_pipeline.h	/^		glm::mat4 view;$/;"	m	struct:ComputePipeline::MeshPushConstants	typeref:typename:glm::mat4
-view	src/core/graphics/move_pipeline.h	/^		glm::mat4 view;$/;"	m	struct:MovePipeline::MeshPushConstants	typeref:typename:glm::mat4
-view	src/core/graphics/raymarch_pipeline.h	/^		glm::mat4 view;$/;"	m	struct:RayMarchPipeline::MeshPushConstants	typeref:typename:glm::mat4
+view	src/core/graphics/compute_pipeline.h	/^		glm::mat4 view;$/;"	m	struct:HexPipeline::HexPushConstants	typeref:typename:glm::mat4
+view	src/core/graphics/move_pipeline.h	/^		glm::mat4 view;$/;"	m	struct:MovePipeline::HexPushConstants	typeref:typename:glm::mat4
+view	src/core/graphics/raymarch_pipeline.h	/^		glm::mat4 view;$/;"	m	struct:RayMarchPipeline::HexPushConstants	typeref:typename:glm::mat4
 view	src/core/graphics/render_pipeline.h	/^	glm::mat4 view;$/;"	m	struct:UniformBufferObject	typeref:typename:glm::mat4
 view	src/core/graphics/screen_pipeline.h	/^	glm::mat4 view;$/;"	m	struct:UniformBufferObject	typeref:typename:glm::mat4
 view	src/core/graphics/texture_pipeline.h	/^	glm::mat4 view;$/;"	m	struct:UniformBufferObject	typeref:typename:glm::mat4

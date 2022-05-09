@@ -37,14 +37,11 @@
 #include <chrono>
 #include <libwebsockets.h>
 #include <core/graphics/render_pipeline.h>
-#include <core/graphics/compute_pipeline.h>
-#include <core/graphics/compute_pipeline.h>
-#include <core/graphics/raymarch_pipeline.h>
-#include <core/engine/compute_manager.h>
-#include <core/graphics/octree_pipeline.h>
+#include <core/graphics/hex_pipeline.h>
+#include <core/graphics/hex_pipeline.h>
 #include "graphics/renderable.h"
-#include "engine/world.h"
 #include "camera.h"
+#include "imgui/imgui.h"
 
 const bool VALIDATION_LAYERS_ENABLED = true;
 
@@ -66,19 +63,15 @@ public:
 	{
 		recreateSwapChain();
 		createDescriptorPool();
-		basepipeline = new BaseRenderPipeline(device, *swapChain, descriptorPool);
-		lowqualitypipeline = new ComputePipeline(device, *swapChain, descriptorPool);
-		octreepipeline = new OctreePipeline(device, *swapChain, descriptorPool);
-		basepipeline->bindTexture(octreepipeline->getComputeTarget());
+        hexPipeline = new HexPipeline(device, *swapChain, descriptorPool);
+        basepipeline = new BaseRenderPipeline(device, *swapChain, descriptorPool);
+		basepipeline->bindTexture(hexPipeline->getComputeTarget());
 		createCommandBuffers();
 
 		gui.initImGui(device, *swapChain, descriptorPool);
 		gui_input = gui.getData();
-		gui_input->pass_cutoff = 120;
-		gui_input->depth = 15;
 
 		inputhandler.init(&window);
-		camera.setInputHandler(&inputhandler);
 
 		spdlog::get("vulkan")->info("Instantiated application");
 	}
@@ -92,7 +85,6 @@ public:
 		input(delta);
 
 		Gui::gui_output output{};
-		output.campos = glm::vec4(camera.getPosition(), 0);
 
 		// Calculate average fps
 		_fps[_fpsindex++] = delta;
@@ -135,16 +127,10 @@ private:
 	VkCommandBuffer computeCommandBuffer;
 	VkDescriptorPool descriptorPool;
 	VksInput inputhandler = VksInput();
-	Camera camera;
 
-	ComputePipeline *lowqualitypipeline = nullptr;
-	OctreePipeline *octreepipeline = nullptr;
+	HexPipeline *hexPipeline = nullptr;
 	BaseRenderPipeline *basepipeline = nullptr;
-//	RayMarchPipeline* raymarchpipeline = nullptr;
-//	MovePipeline* movepipeline = nullptr;
-//	ComputeManager computeManager = ComputeManager(device);
 
-	IRenderable *world = new World(device);
 	VkResult err;
 
 	// ImGui
@@ -167,26 +153,9 @@ private:
 			}
 		}
 
-		lowqualitypipeline->setEpsilon(0.0003f);
-		lowqualitypipeline->setMaxPasses(40);
-		octreepipeline->setEpsilon(0.000003f);
-
-//		if (inputhandler.isKeyDown(GLFW_KEY_R))
-//		{
-//			computeManager.render(camera);
-//			basepipeline->bindTexture(raymarchpipeline->getComputeTarget());
-//			showingcompute = true;
-//		}
-//		if (inputhandler.isKeyDown(GLFW_KEY_E))
-//		{
-//			basepipeline->bindTexture(movepipeline->getComputeTarget());
-//		}
-
-//        entity.position = glm::vec3(gui_x, gui_y, gui_z);
+		hexPipeline->setEpsilon(0.000003f);
 
 		if (!inputhandler.isMouseSwallowed()) return;
-
-		camera.update(delta);
 
 	}
 
@@ -294,11 +263,9 @@ private:
 		}
 
 		// Compute
-		octreepipeline->begin(computeCommandBuffer, 0);
-		octreepipeline->updateBuffers(camera, gui_input->lookat);
-		octreepipeline->setMaxPasses(gui_input->pass_cutoff);
-		octreepipeline->setDepth(gui_input->depth);
-		octreepipeline->end();
+		hexPipeline->begin(computeCommandBuffer, 0);
+		hexPipeline->updateBuffers();
+		hexPipeline->end();
 
 		if (vkEndCommandBuffer(computeCommandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");
@@ -326,7 +293,7 @@ private:
 			computeBarrier.dstAccessMask = VK_ACCESS_MEMORY_READ_BIT;
 			computeBarrier.oldLayout = VK_IMAGE_LAYOUT_GENERAL;
 			computeBarrier.newLayout = VK_IMAGE_LAYOUT_GENERAL;
-			computeBarrier.image = octreepipeline->getResultImage();
+			computeBarrier.image = hexPipeline->getResultImage();
 			computeBarrier.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
 			computeBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 			computeBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
@@ -371,15 +338,7 @@ private:
 
 			// Render screen quad
 			basepipeline->begin(commandBuffers[i], i);
-			basepipeline->updateBuffers(camera);
-//			screenpipeline->begin(commandBuffers[i], i);
-//			screenpipeline->updateBuffers(camera);
-//			world->draw(*basepipeline);
-//			basepipeline->bindModelTransform(glm::mat4(1));
-//
-//			screenpipeline->drawModel();
-//			basepipeline->bindModel(*model);
-//			basepipeline->drawModel();
+//			basepipeline->updateBuffers(camera);
 			basepipeline->drawScreenRect();
 
 			// Render imgui data

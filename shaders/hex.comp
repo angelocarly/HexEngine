@@ -1,0 +1,110 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+
+#define WIDTH 1600
+#define HEIGHT 900
+#define WORKGROUP_SIZE 32
+layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1) in;
+
+layout(push_constant) uniform constants
+{
+    mat4 model;
+    mat4 view;
+    mat4 projection;
+    float time;
+} PushConstants;
+
+layout (binding = 0, rgba8) uniform image2D resultImage;
+
+vec3 screenPosToHexCoord(vec2 position, float diameter);
+int calcHexIndex(vec3 position);
+
+void main()
+{
+    // Terminate unnecessary workgroup threads
+    if (gl_GlobalInvocationID.x >= WIDTH || gl_GlobalInvocationID.y >= HEIGHT)
+    return;
+
+    // Camera setup
+    float x = float(gl_GlobalInvocationID.x) / float(WIDTH);
+    float y = float(gl_GlobalInvocationID.y) / float(HEIGHT);
+
+    vec2 uv = vec2(x, y) * 2.0 - 1.0;
+    uv.x *= WIDTH / float(HEIGHT);
+
+    // Calc hex position
+    vec3 pos = screenPosToHexCoord(uv / 2.0f, 0.2);
+    int hexindex = calcHexIndex(pos);
+
+    vec3 color = vec3(hexindex / 10.0f);
+
+    imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(color, 1));
+
+}
+
+int calcHexIndex(vec3 pos)
+{
+    vec3 sig = sign(pos);
+    vec3 shiftedpos = vec3(sig.z, sig.x, sig.y);
+    vec3 mask = vec3(1) - max(sig * shiftedpos, vec3(0));
+
+    vec3 u = mask * sig;
+
+    mat2 transform = mat2(
+    u.x, u.y,
+    u.z, u.x
+    );
+
+    // TODO: clean up hex leg calculation
+    vec2 subCoord = inverse(transform) * pos.xy - vec2(1, 0);
+    int leg = 3 * int(u.x) + int(u.y);
+    if (leg < 0) leg += 7;
+    leg -= 1;
+
+    if (pos == vec3(0)) return 0;
+    int index = 1 + 6 * int(subCoord.x) * (int(subCoord.x) + 1) / 2 + leg * int(subCoord.x + 1.0) + int(subCoord.y);
+
+    return index;
+}
+
+vec3 screenPosToHexCoord(vec2 position, float diameter)
+{
+    mat2 hexToScreenMatrix = mat2(-1, 0, -1.0 / 2.0f, sqrt(3.0f) / 2.0);
+
+    vec2 posInHexSpace = inverse(hexToScreenMatrix) * (position / vec2(diameter));
+
+    vec3 newPos;
+    newPos.x = -posInHexSpace.x - posInHexSpace.y;
+    newPos.y = posInHexSpace.x;
+    newPos.z = posInHexSpace.y;
+
+    // How much does the position deviate from a unit coord?
+    vec3 roundDelta;
+    roundDelta.x = abs(round(newPos.x) - newPos.x);
+    roundDelta.y = abs(round(newPos.y) - newPos.y);
+    roundDelta.z = abs(round(newPos.z) - newPos.z);
+
+    // Recalculate the axis with the biggest error
+    vec3 nodepos;
+    if (roundDelta.z > roundDelta.x && roundDelta.z > roundDelta.y)
+    {
+        // Z biggest error
+        nodepos.x = round(newPos.x);
+        nodepos.y = round(newPos.y);
+        nodepos.z = -nodepos.x - nodepos.y;
+    } else if (roundDelta.y > roundDelta.x && roundDelta.y > roundDelta.z)
+    {
+        // Y biggest error
+        nodepos.x = round(newPos.x);
+        nodepos.z = round(newPos.z);
+        nodepos.y = -nodepos.x - nodepos.z;
+    } else
+    {
+        // X biggest error
+        nodepos.y = round(newPos.y);
+        nodepos.z = round(newPos.z);
+        nodepos.x = -nodepos.y - nodepos.z;
+    }
+
+    return nodepos;
+}
