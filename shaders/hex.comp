@@ -11,10 +11,18 @@ layout(push_constant) uniform constants
     mat4 model;
     mat4 view;
     mat4 projection;
+    float zoom;
     float time;
 } PushConstants;
 
+struct hex_node {
+    vec3 color;
+};
+
 layout (binding = 0, rgba8) uniform image2D resultImage;
+layout (std430, binding = 1) readonly buffer HexGrid {
+    hex_node[] nodes;
+} hexgrid;
 
 vec3 screenPosToHexCoord(vec2 position, float diameter);
 int calcHexIndex(vec3 position);
@@ -33,10 +41,14 @@ void main()
     uv.x *= WIDTH / float(HEIGHT);
 
     // Calc hex position
-    vec3 pos = screenPosToHexCoord(uv / 2.0f, 0.2);
+    vec3 pos = screenPosToHexCoord(uv / 2.0f, PushConstants.zoom);
     int hexindex = calcHexIndex(pos);
 
-    vec3 color = vec3(hexindex / 10.0f);
+    vec3 color = vec3(0);
+    int n = 7;
+    if (hexindex < 1 + 6 * n * (n + 1) / 2) {
+        color = hexgrid.nodes[hexindex].color;
+    }
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(color, 1));
 

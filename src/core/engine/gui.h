@@ -25,6 +25,7 @@ public:
 		glm::vec4 lookat;
 		int pass_cutoff;
 		float depth;
+        float zoom;
 	};
 
 	Gui(vks::VksWindow* window)
@@ -117,9 +118,9 @@ public:
 
 		ImGui::Begin("Shader settings");
 		{
-			ImGui::SliderFloat4("lookat", glm::value_ptr(data->lookat), -1.0f, 1.0f, "%.7f");
-			ImGui::SliderInt("pass cutoff", &data->pass_cutoff, 1, 200);
-			ImGui::SliderFloat("depth", &data->depth, 0.0f, 3.0f);
+			ImGui::SliderFloat("zoom", &data->zoom, 0.002f, 0.25f, "%.7f");
+//			ImGui::SliderInt("pass cutoff", &data->pass_cutoff, 1, 200);
+//			ImGui::SliderFloat("depth", &data->depth, 0.0f, 3.0f);
 		}
 		ImGui::End();
 

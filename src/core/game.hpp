@@ -37,8 +37,8 @@
 #include <chrono>
 #include <libwebsockets.h>
 #include <core/graphics/render_pipeline.h>
-#include <core/graphics/hex_pipeline.h>
-#include <core/graphics/hex_pipeline.h>
+#include <core/graphics/hex_display_pipeline.h>
+#include <core/graphics/hex_display_pipeline.h>
 #include "graphics/renderable.h"
 #include "camera.h"
 #include "imgui/imgui.h"
@@ -70,6 +70,7 @@ public:
 
 		gui.initImGui(device, *swapChain, descriptorPool);
 		gui_input = gui.getData();
+        gui_input->zoom = .2f;
 
 		inputhandler.init(&window);
 
@@ -145,15 +146,15 @@ private:
 			inputhandler.showMouse();
 		}
 
-		if (inputhandler.isButtonClicked(GLFW_MOUSE_BUTTON_1)) {
+//		if (inputhandler.isButtonClicked(GLFW_MOUSE_BUTTON_1)) {
+//
+//			ImGuiIO &io = ImGui::GetIO();
+//			if (!io.WantCaptureMouse) {
+//				inputhandler.swallowMouse();
+//			}
+//		}
 
-			ImGuiIO &io = ImGui::GetIO();
-			if (!io.WantCaptureMouse) {
-				inputhandler.swallowMouse();
-			}
-		}
-
-		hexPipeline->setEpsilon(0.000003f);
+        hexPipeline->setZoom(gui_input->zoom);
 
 		if (!inputhandler.isMouseSwallowed()) return;
 
