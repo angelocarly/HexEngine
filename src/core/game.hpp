@@ -42,6 +42,7 @@
 #include "graphics/renderable.h"
 #include "camera.h"
 #include "imgui/imgui.h"
+#include "core/graphics/hex_calc_pipeline.h"
 
 const bool VALIDATION_LAYERS_ENABLED = true;
 
@@ -63,14 +64,17 @@ public:
 	{
 		recreateSwapChain();
 		createDescriptorPool();
-        hexPipeline = new HexPipeline(device, *swapChain, descriptorPool);
+        hexCalcPipeline = new HexCalcPipeline(device, *swapChain, descriptorPool);
+        hexPipeline = new HexDisplayPipeline(device, *swapChain, descriptorPool);
         basepipeline = new BaseRenderPipeline(device, *swapChain, descriptorPool);
 		basepipeline->bindTexture(hexPipeline->getComputeTarget());
+        hexPipeline->setHexBuffer(hexCalcPipeline->getHexBuffer());
 		createCommandBuffers();
 
 		gui.initImGui(device, *swapChain, descriptorPool);
 		gui_input = gui.getData();
-        gui_input->zoom = .2f;
+        gui_input->zoom = .1f;
+        gui_input->computeSpeed = 30;
 
 		inputhandler.init(&window);
 
@@ -104,6 +108,7 @@ public:
 		drawFrame();
 
 		inputhandler.syncInputState();
+        firstcycle = false;
 	}
 
 	void destroy()
@@ -129,7 +134,8 @@ private:
 	VkDescriptorPool descriptorPool;
 	VksInput inputhandler = VksInput();
 
-	HexPipeline *hexPipeline = nullptr;
+    HexCalcPipeline *hexCalcPipeline = nullptr;
+	HexDisplayPipeline *hexPipeline = nullptr;
 	BaseRenderPipeline *basepipeline = nullptr;
 
 	VkResult err;
@@ -137,7 +143,8 @@ private:
 	// ImGui
 	Gui gui = Gui(&window);
 	Gui::gui_input *gui_input;
-	bool showingcompute = false;
+    int framessincelastcompute = 0;
+    bool firstcycle = true;
 
 	void input(float delta)
 	{
@@ -262,6 +269,16 @@ private:
 		if (vkBeginCommandBuffer(computeCommandBuffer, &beginInfo) != VK_SUCCESS) {
 			throw std::runtime_error("failed to begin recording command buffer!");
 		}
+
+        // Compute
+        if (gui_input->shouldRender && framessincelastcompute > gui_input->computeSpeed)
+        {
+            framessincelastcompute = 0;
+            hexCalcPipeline->begin(computeCommandBuffer, 0);
+            hexCalcPipeline->execute();
+            hexCalcPipeline->end();
+        }
+        framessincelastcompute++;
 
 		// Compute
 		hexPipeline->begin(computeCommandBuffer, 0);

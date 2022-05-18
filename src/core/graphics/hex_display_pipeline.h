@@ -10,7 +10,7 @@
 #include <lodepng.h>
 #include <vks/VulkanInitializers.h>
 
-class HexPipeline : public IRenderPipeline
+class HexDisplayPipeline : public IRenderPipeline
 {
 public:
 
@@ -19,7 +19,7 @@ public:
         glm::vec3 color;
     };
 
-    HexPipeline(VksDevice &device, VksSwapChain &swapChain, VkDescriptorPool &descriptorPool)
+    HexDisplayPipeline(VksDevice &device, VksSwapChain &swapChain, VkDescriptorPool &descriptorPool)
             : _device(device), _descriptorPool(descriptorPool), _swapChain(swapChain)
     {
         init();
@@ -98,6 +98,11 @@ public:
         return imageInfo;
     }
 
+    void setHexBuffer(VkDescriptorBufferInfo bufferInfo)
+    {
+        updateDescriptorSets(bufferInfo);
+    }
+
 private:
 
     struct HexPushConstants
@@ -114,7 +119,7 @@ private:
 
     const int WIDTH = 1600;
     const int HEIGHT = 900;
-    const int WORKGROUP_SIZE = 32;
+    const int WORKGROUP_SIZE = 16;
 
     VksDevice &_device;
     VkDescriptorPool &_descriptorPool;
@@ -284,12 +289,24 @@ private:
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
-        // Allocate the storage buffer to the descriptor set
 
+        // Initialize descriptors with own buffer
         VkDescriptorBufferInfo bufferInfo{};
         bufferInfo.buffer = _buffer;
         bufferInfo.offset = 0;
         bufferInfo.range = _bufferSize;
+
+        updateDescriptorSets(bufferInfo);
+    }
+
+    void updateDescriptorSets(VkDescriptorBufferInfo hexBuffer)
+    {
+        // Allocate the storage buffer to the descriptor set
+
+//        VkDescriptorBufferInfo bufferInfo{};
+//        bufferInfo.buffer = _buffer;
+//        bufferInfo.offset = 0;
+//        bufferInfo.range = _bufferSize;
 
         VkDescriptorImageInfo imageInfo{};
         imageInfo.imageView = _imageView;
@@ -314,7 +331,7 @@ private:
         descriptorWrites[1].dstArrayElement = 0;
         descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         descriptorWrites[1].descriptorCount = 1;
-        descriptorWrites[1].pBufferInfo = &bufferInfo;
+        descriptorWrites[1].pBufferInfo = &hexBuffer;
 
         vkUpdateDescriptorSets(_device.getVkDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
     }
@@ -375,7 +392,7 @@ private:
 
         std::vector<hex_node> nodes;
 
-        for (int i = 0; i < 500; i++)
+        for (int i = 0; i < 3000; i++)
         {
             nodes.push_back({
                 glm::vec3(
@@ -384,6 +401,12 @@ private:
                         static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0f))
                         )
             });
+//            if ( rand() % 20 == 0)
+//            {
+//                nodes.push_back({glm::vec3(1.0f)});
+//            } else {
+//                nodes.push_back({glm::vec3(0.0f)});
+//            }
         }
 
         _bufferSize = sizeof(hex_node) * nodes.size();

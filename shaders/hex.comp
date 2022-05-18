@@ -3,7 +3,8 @@
 
 #define WIDTH 1600
 #define HEIGHT 900
-#define WORKGROUP_SIZE 32
+#define WORKGROUP_SIZE 16
+#define HEXBUFFER_SIZE 6000
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1) in;
 
 layout(push_constant) uniform constants
@@ -24,6 +25,15 @@ layout (std430, binding = 1) readonly buffer HexGrid {
     hex_node[] nodes;
 } hexgrid;
 
+vec3[6] updirs = vec3[6](
+vec3(-1.0, 1.0, 0.0), // 0
+vec3(-1.0, 0.0, 1.0), // 1
+vec3(0.0, -1.0, 1.0), // 2
+vec3(1.0, -1.0, 0.0), // 3
+vec3(1.0, 0.0, -1.0), // 4
+vec3(0.0, 1.0, -1.0)  // 5
+);
+
 vec3 screenPosToHexCoord(vec2 position, float diameter);
 int calcHexIndex(vec3 position);
 
@@ -41,13 +51,13 @@ void main()
     uv.x *= WIDTH / float(HEIGHT);
 
     // Calc hex position
-    vec3 pos = screenPosToHexCoord(uv / 2.0f, PushConstants.zoom);
+    vec3 pos = screenPosToHexCoord(uv / 2.0f, PushConstants.zoom * PushConstants.zoom);
     int hexindex = calcHexIndex(pos);
 
     vec3 color = vec3(0);
-    int n = 7;
-    if (hexindex < 1 + 6 * n * (n + 1) / 2) {
+    if (hexindex < HEXBUFFER_SIZE) {
         color = hexgrid.nodes[hexindex].color;
+//        color = vec3(hexindex / 100.0);
     }
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(color, 1));
@@ -67,13 +77,18 @@ int calcHexIndex(vec3 pos)
     u.z, u.x
     );
 
-    // TODO: clean up hex leg calculation
-    vec2 subCoord = inverse(transform) * pos.xy - vec2(1, 0);
-    int leg = 3 * int(u.x) + int(u.y);
-    if (leg < 0) leg += 7;
-    leg -= 1;
+    // TODO: remove branching
+    int leg = 0;
+    if ( u.x == -1.0 && u.y == 1.0) leg = 0;
+    if ( u.x == -1.0 && u.y == 0.0) leg = 1;
+    if ( u.x == 0.0 && u.y == -1.0) leg = 2;
+    if ( u.x == 1.0 && u.y == -1.0) leg = 3;
+    if ( u.x == 1.0 && u.y == 0.0) leg = 4;
+    if ( u.x == 0.0 && u.y == 1.0) leg = 5;
 
     if (pos == vec3(0)) return 0;
+
+    vec2 subCoord = inverse(transform) * pos.xy - vec2(1, 0);
     int index = 1 + 6 * int(subCoord.x) * (int(subCoord.x) + 1) / 2 + leg * int(subCoord.x + 1.0) + int(subCoord.y);
 
     return index;

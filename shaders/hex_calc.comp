@@ -1,0 +1,190 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+#extension GL_KHR_shader_subgroup_arithmetic: enable
+
+#define WIDTH 1600
+#define HEIGHT 900
+#define WORKGROUP_SIZE 19
+#define HEXBUFFER_SIZE 6000
+layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1) in;
+
+layout(push_constant) uniform constants
+{
+    float time;
+} PushConstants;
+
+struct hex_node {
+    vec3 color;
+};
+
+layout (std430, binding = 0) buffer HexGrid {
+    hex_node[] nodes;
+} hexgrid;
+
+
+vec3[6] updirs = vec3[6](
+    vec3(-1.0, 1.0, 0.0),
+    vec3(-1.0, 0.0, 1.0),
+    vec3(0.0, -1.0, 1.0),
+    vec3(1.0, -1.0, 0.0),
+    vec3(1.0, 0.0, -1.0),
+    vec3(0.0, 1.0, -1.0)
+);
+
+vec3 calcHexIndex(int position);
+int calcHexIndex(vec3 position);
+
+float sphereSdf(vec3 pos, vec3 spherePos, float radius)
+{
+    return length(pos - spherePos) - radius;
+}
+
+float boxSdf(vec3 p, vec3 b)
+{
+    vec3 q = abs(p) - b;
+    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
+}
+
+float sdf(vec3 pos)
+{
+//    return max(sphereSdf(pos, vec3(30), 40), -sphereSdf(pos, vec3(10), 20));
+      return min(
+        max(
+            boxSdf(pos - vec3(50) + vec3(sin(PushConstants.time) * 10, sin(PushConstants.time * 1.2) * 20, 0), vec3(20)),
+            -sphereSdf(pos, vec3(50) - vec3(sin(PushConstants.time) * 10, sin(PushConstants.time * 1.2) * 20, 0), 27)
+        ),
+        max(
+            sphereSdf(pos, vec3(60), 40),
+            -sphereSdf(pos, vec3(40 + 10 * sin(PushConstants.time), 20 + 10 * cos(PushConstants.time * 0.6f), 40), 25)
+        )
+      );
+//    return sphereSdf(pos, vec3(33), 20);
+//    return boxSdf(pos - vec3(sin(PushConstants.time) * 10 + 20), vec3(10));
+}
+
+vec3 calcNormal( vec3  p ) // for function f(p)
+{
+    const float h = 0.0001; // replace by an appropriate value
+    const vec2 k = vec2(1,-1);
+    return normalize( k.xyy*sdf( p + k.xyy*h ) +
+    k.yyx*sdf( p + k.yyx*h ) +
+    k.yxy*sdf( p + k.yxy*h ) +
+    k.xxx*sdf( p + k.xxx*h ) );
+}
+
+float trace(vec3 pos, vec3 dir)
+{
+    float t = 0;
+    for(int step=0; step < 100; step++)
+    {
+        float tStep = sdf(pos + t * dir);
+
+        t += tStep;
+        if (tStep < 0.001f)
+        {
+            break;
+        }
+
+        if (step == 100 - 1)
+        {
+            return -1;
+        }
+    }
+    return t;
+}
+
+vec3 cosColor(float t, vec3 d, vec3 e, vec3 f, vec3 g)
+{
+    return vec3(d + e*cos(6.28318*(f*t+g)));
+}
+
+vec3 calcGroupHexIndex()
+{
+    int hexsize = 3;
+    int pos = int(gl_WorkGroupID.x);
+    if (pos == 0) return vec3(0);
+
+    // pos + updir * (2r + 1) + leftdir * r
+    pos -= 1;
+    int hexradius = int(floor((-3 + sqrt(9 + 12*pos)) / 6.0));
+    int window = 3 * hexradius * (hexradius + 1);
+    hexradius += 1;
+    int leg = int((pos - window) / hexradius);
+    int offset = (pos - window) % hexradius;
+
+    vec3 newupdir = updirs[leg] * hexsize + updirs[(leg + 5) % 6] * (hexsize - 1);
+    vec3 newrightdir = -updirs[(leg + 5) % 6] * hexsize + updirs[(leg + 1) % 6] * (hexsize - 1);
+    vec3 hexpos = newupdir * hexradius + newrightdir * offset;
+    return hexpos;
+}
+
+void main()
+{
+    // Terminate unnecessary workgroup threads
+    if (gl_GlobalInvocationID.x >= HEXBUFFER_SIZE)
+    return;
+
+    // Position
+    vec3 localHexPos = calcHexIndex(int(gl_LocalInvocationID.x));
+    vec3 groupHexPos = calcGroupHexIndex();
+    vec3 globalHexPos = groupHexPos + localHexPos;
+    int bufferindex = calcHexIndex(globalHexPos);
+
+    // Color
+    vec3 d = vec3(0.3, 0.3, 0.5);
+    vec3 e = vec3(-0.2, -0.3, -0.5);
+    vec3 f = vec3(2.1, 2.0, 3.0);
+    vec3 g = vec3(0.0, 0.1, 0.0);
+    vec3 col = cosColor(gl_WorkGroupID.x / 100.0f, vec3(0.3, 0.3, 0.5), vec3(0.4, 0.3, 0.5), vec3(1.1, 0.7, 0.3), vec3(0.4, 0.1, 0.3));
+
+    vec3 curcolor = hexgrid.nodes[bufferindex].color;
+    col = subgroupMax(curcolor);
+
+    hexgrid.nodes[bufferindex].color = col;
+//    hexgrid.nodes[bufferindex].color = vec3(.5) * vec3(.5) * calcGroupHexIndex();
+}
+
+vec3 calcHexIndex(int pos)
+{
+    if (pos == 0 ) return vec3(0);
+
+    pos -= 1;
+    int hexradius = int(floor((-3 + sqrt(9 + 12*pos)) / 6.0));
+    int window = 3 * hexradius * (hexradius + 1);
+    hexradius += 1;
+    int leg = int((pos - window) / hexradius);
+    int offset = (pos - window) % hexradius;
+
+    vec3 hexpos = updirs[leg] * hexradius + updirs[(leg + 2) % 6] * offset;
+    return hexpos;
+}
+
+int calcHexIndex(vec3 pos)
+{
+    vec3 sig = sign(pos);
+    vec3 shiftedpos = vec3(sig.z, sig.x, sig.y);
+    vec3 mask = vec3(1) - max(sig * shiftedpos, vec3(0));
+
+    vec3 u = mask * sig;
+
+    mat2 transform = mat2(
+    u.x, u.y,
+    u.z, u.x
+    );
+
+    // TODO: remove branching
+    int leg = 0;
+    if ( u.x == -1.0 && u.y == 1.0) leg = 0;
+    if ( u.x == -1.0 && u.y == 0.0) leg = 1;
+    if ( u.x == 0.0 && u.y == -1.0) leg = 2;
+    if ( u.x == 1.0 && u.y == -1.0) leg = 3;
+    if ( u.x == 1.0 && u.y == 0.0) leg = 4;
+    if ( u.x == 0.0 && u.y == 1.0) leg = 5;
+
+    if (pos == vec3(0)) return 0;
+
+    vec2 subCoord = inverse(transform) * pos.xy - vec2(1, 0);
+    int index = 1 + 6 * int(subCoord.x) * (int(subCoord.x) + 1) / 2 + leg * int(subCoord.x + 1.0) + int(subCoord.y);
+
+    return index;
+}

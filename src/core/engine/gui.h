@@ -22,6 +22,8 @@ public:
 
 	struct gui_input
 	{
+        bool shouldRender;
+        int computeSpeed;
 		glm::vec4 lookat;
 		int pass_cutoff;
 		float depth;
@@ -121,6 +123,9 @@ public:
 			ImGui::SliderFloat("zoom", &data->zoom, 0.002f, 0.25f, "%.7f");
 //			ImGui::SliderInt("pass cutoff", &data->pass_cutoff, 1, 200);
 //			ImGui::SliderFloat("depth", &data->depth, 0.0f, 3.0f);
+            ImGui::SliderInt("Compute speed (1/frame)", &data->computeSpeed, 1, 100 );
+            ImGui::Checkbox("Always compute", &alwaysComputeCheckbox);
+            data->shouldRender = ImGui::Button("Compute") || alwaysComputeCheckbox;
 		}
 		ImGui::End();
 
@@ -143,6 +148,7 @@ private:
 
 	bool imguiInitialized = false;
 	gui_input* data;
+    bool alwaysComputeCheckbox = false;
 };
 
 #endif //VULKANENGINE_GUI_H
