@@ -392,7 +392,7 @@ private:
 
         std::vector<hex_node> nodes;
 
-        for (int i = 0; i < 3000; i++)
+        for (int i = 0; i < 50000; i++)
         {
             nodes.push_back({
                 glm::vec3(

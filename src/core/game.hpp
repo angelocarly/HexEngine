@@ -45,7 +45,6 @@
 #include "core/graphics/hex_calc_pipeline.h"
 
 const bool VALIDATION_LAYERS_ENABLED = true;
-
 const bool VSYNC = true;
 
 using namespace vks;
@@ -249,15 +248,16 @@ private:
 	}
 
 	/**
-	 * Create the command buffers used to render our scene
+	 * Store the rendering operations in the command buffers
 	 */
 	void recordCommandBuffers()
 	{
-		// Before recreating the command buffers, wait until they are no longer in use
-		// Might be a reason for slowdowns in the future
+		// Before recreating the command buffers, wait until they are no longer in use or rendering to the swapchain
+		// This might be a reason for slowdowns in the future
 		swapChain->waitForImageInFlight();
 		device.waitIdle();
 
+        // Record the hex command buffer
 		err = vkResetCommandBuffer(computeCommandBuffer, VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
 		check_vk_result(err);
 
@@ -270,7 +270,6 @@ private:
 			throw std::runtime_error("failed to begin recording command buffer!");
 		}
 
-        // Compute
         if (gui_input->shouldRender && framessincelastcompute > gui_input->computeSpeed)
         {
             framessincelastcompute = 0;
@@ -280,7 +279,6 @@ private:
         }
         framessincelastcompute++;
 
-		// Compute
 		hexPipeline->begin(computeCommandBuffer, 0);
 		hexPipeline->updateBuffers();
 		hexPipeline->end();
@@ -289,7 +287,7 @@ private:
 			throw std::runtime_error("failed to record command buffer!");
 		}
 
-		// Swapchain renderpasses
+		// Record the standard image renderpasses
 		for (size_t i = 0; i < commandBuffers.size(); i++) {
 			err = vkResetCommandBuffer(commandBuffers[i], VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
 			check_vk_result(err);
@@ -303,7 +301,6 @@ private:
 				throw std::runtime_error("failed to begin recording command buffer!");
 			}
 
-//
 //			// Wait until the compute shader is finished rendering to it's texture
 			VkImageMemoryBarrier computeBarrier{};
 			computeBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -320,7 +317,6 @@ private:
 				commandBuffers[i],
 				VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
 				VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
-//0,
 				0,
 				0, NULL,
 				0, NULL,
@@ -356,7 +352,6 @@ private:
 
 			// Render screen quad
 			basepipeline->begin(commandBuffers[i], i);
-//			basepipeline->updateBuffers(camera);
 			basepipeline->drawScreenRect();
 
 			// Render imgui data
@@ -370,7 +365,7 @@ private:
 	}
 
 	/**
-	 * Render our command buffers to the swapchain
+	 * Submit the command buffer to be rendered to the swapchain
 	 */
 	void drawFrame()
 	{

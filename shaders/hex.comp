@@ -4,7 +4,7 @@
 #define WIDTH 1600
 #define HEIGHT 900
 #define WORKGROUP_SIZE 16
-#define HEXBUFFER_SIZE 6000
+#define HEXBUFFER_SIZE 50000
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1) in;
 
 layout(push_constant) uniform constants

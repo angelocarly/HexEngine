@@ -5,7 +5,7 @@
 #define WIDTH 1600
 #define HEIGHT 900
 #define WORKGROUP_SIZE 19
-#define HEXBUFFER_SIZE 6000
+#define HEXBUFFER_SIZE 50000
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1) in;
 
 layout(push_constant) uniform constants
@@ -130,15 +130,19 @@ void main()
     vec3 globalHexPos = groupHexPos + localHexPos;
     int bufferindex = calcHexIndex(globalHexPos);
 
+    vec3 curcolor = hexgrid.nodes[bufferindex].color;
+    vec3 norm = normalize(vec3(1));
+
+    float dist = trace(globalHexPos, norm);
+    vec3 wpos = globalHexPos + dist * norm;
+    vec3 col = -calcNormal(wpos) * (dist / 120.0f);
+
     // Color
     vec3 d = vec3(0.3, 0.3, 0.5);
     vec3 e = vec3(-0.2, -0.3, -0.5);
     vec3 f = vec3(2.1, 2.0, 3.0);
     vec3 g = vec3(0.0, 0.1, 0.0);
-    vec3 col = cosColor(gl_WorkGroupID.x / 100.0f, vec3(0.3, 0.3, 0.5), vec3(0.4, 0.3, 0.5), vec3(1.1, 0.7, 0.3), vec3(0.4, 0.1, 0.3));
-
-    vec3 curcolor = hexgrid.nodes[bufferindex].color;
-    col = subgroupMax(curcolor);
+    col = cosColor(dist / 50.0f, vec3(0.3, 0.3, 0.5), vec3(0.5, 0.3, 0.5), vec3(1.1, 0.4, 0.8), vec3(0.4, 0.1, 0.3));
 
     hexgrid.nodes[bufferindex].color = col;
 //    hexgrid.nodes[bufferindex].color = vec3(.5) * vec3(.5) * calcGroupHexIndex();
