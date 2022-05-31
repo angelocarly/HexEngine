@@ -79,10 +79,8 @@ public:
         vkCmdPushConstants(_currentCommandBuffer, pipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0,
                            sizeof(HexPushConstants), &constants);
 
-        vkCmdDispatch(_currentCommandBuffer,
-                      (uint32_t) ceil(_bufferSize / float(WORKGROUP_SIZE)),
-                      1,
-                      1);
+        vkCmdDispatch(_currentCommandBuffer, (uint32_t) ceil(WIDTH / float(WORKGROUP_SIZE * CLUSTER_SIZE)), (uint32_t) ceil(
+                HEIGHT / float(WORKGROUP_SIZE * CLUSTER_SIZE)), 1);
     }
 
 private:
@@ -92,8 +90,9 @@ private:
         float time;
     };
 
-    const int WORKGROUP_SIZE = 19;
-    const int WIDTH = 1600;
+    const int WORKGROUP_SIZE = 16;
+    const int CLUSTER_SIZE = 2;
+    const int WIDTH = 779;
     const int HEIGHT = 900;
 
     VksDevice &_device;
@@ -256,7 +255,7 @@ private:
 
         std::vector<hex_node> nodes;
 
-        for (int i = 0; i < 50000; i++)
+        for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
             nodes.push_back({
                                     glm::vec3(

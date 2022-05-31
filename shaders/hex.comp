@@ -4,7 +4,8 @@
 #define WIDTH 1600
 #define HEIGHT 900
 #define WORKGROUP_SIZE 16
-#define HEXBUFFER_SIZE 50000
+#define HEXBUFFER_WIDTH 779
+#define HEXBUFFER_HEIGHT 900
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1) in;
 
 layout(push_constant) uniform constants
@@ -54,13 +55,14 @@ void main()
 
     vec2 uv = vec2(x, y) * 2.0 - 1.0;
     uv.x *= WIDTH / float(HEIGHT);
+    uv += vec2(HEXBUFFER_WIDTH, HEXBUFFER_WIDTH) * PushConstants.zoom * PushConstants.zoom;
 
     // Calc hex position
     vec3 pos = screenPosToHexCoord(uv / 2.0f, PushConstants.zoom * PushConstants.zoom);
     int hexindex = calcHexIndex(pos);
 
     vec3 color = vec3(0);
-    if (hexindex < HEXBUFFER_SIZE) {
+    if (hexindex >= 0) {
         color = hexgrid.nodes[hexindex].color;
 //        color = vec3(hexindex / 100.0);
     }
@@ -73,37 +75,17 @@ void main()
 //    color = cosColor(color.r / 1.5 + .5, vec3(0.3, 0.3, 0.5), vec3(0.5, 0.3, 0.5), vec3(1.1, 0.4, 0.8), vec3(0.4, 0.1, 0.3));
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(color, 1));
+//    vec2 ps = vec2(hexindex % WIDTH, floor(hexindex / float(WIDTH)));
+//    if (hexindex < 0) ps = vec2(0);
+//    imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(vec3(ps.xy / 100.0f, 0), 1));
 
 }
 
 int calcHexIndex(vec3 pos)
 {
-    vec3 sig = sign(pos);
-    vec3 shiftedpos = vec3(sig.z, sig.x, sig.y);
-    vec3 mask = vec3(1) - max(sig * shiftedpos, vec3(0));
-
-    vec3 u = mask * sig;
-
-    mat2 transform = mat2(
-    u.x, u.y,
-    u.z, u.x
-    );
-
-    // TODO: remove branching
-    int leg = 0;
-    if ( u.x == -1.0 && u.y == 1.0) leg = 0;
-    if ( u.x == -1.0 && u.y == 0.0) leg = 1;
-    if ( u.x == 0.0 && u.y == -1.0) leg = 2;
-    if ( u.x == 1.0 && u.y == -1.0) leg = 3;
-    if ( u.x == 1.0 && u.y == 0.0) leg = 4;
-    if ( u.x == 0.0 && u.y == 1.0) leg = 5;
-
-    if (pos == vec3(0)) return 0;
-
-    vec2 subCoord = inverse(transform) * pos.xy - vec2(1, 0);
-    int index = 1 + 6 * int(subCoord.x) * (int(subCoord.x) + 1) / 2 + leg * int(subCoord.x + 1.0) + int(subCoord.y);
-
-    return index;
+    int offset = int(ceil(pos.z / 2.0)) - 1;
+    if (pos.y + offset > -2 || pos.x + offset >= HEXBUFFER_WIDTH || pos.z > HEXBUFFER_HEIGHT) return -1;
+    return int(pos.x) + int(pos.z) * HEXBUFFER_WIDTH + offset;
 }
 
 vec3 screenPosToHexCoord(vec2 position, float diameter)
