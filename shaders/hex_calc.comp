@@ -6,8 +6,11 @@
 #define HEIGHT 900
 #define WORKGROUP_SIZE 16
 #define CLUSTER_SIZE 2
+#define LOCAL_SIZE (WORKGROUP_SIZE * CLUSTER_SIZE)
 #define HEXBUFFER_SIZE WIDTH * HEIGHT
 #define CALCULATE_RANGE 2
+# define OVERLAP (CALCULATE_RANGE)
+//#define OVERLAP CALCULATE_RANGE
 layout (local_size_x = WORKGROUP_SIZE, local_size_y = WORKGROUP_SIZE, local_size_z = 1) in;
 
 layout(push_constant) uniform constants
@@ -24,7 +27,7 @@ layout (std430, binding = 0) buffer HexGrid {
 } hexgrid;
 
 #define WG_BUF_SIZE CLUSTER_SIZE * CLUSTER_SIZE * WORKGROUP_SIZE * WORKGROUP_SIZE
-shared vec3 wg_hexdata[WG_BUF_SIZE];
+shared vec3 local_hexdata[WG_BUF_SIZE];
 
 vec3[6] updirs = vec3[6](
     vec3(-1.0, 1.0, 0.0),
@@ -106,6 +109,7 @@ vec3 cosColor(float t, vec3 d, vec3 e, vec3 f, vec3 g)
 void main()
 {
     // Terminate unnecessary workgroup threads
+    // TODO: also check for edges of workgroups that aren't processed due to CALCULATE_RANGE
     if (gl_GlobalInvocationID.x >= WIDTH || gl_GlobalInvocationID.y >= HEIGHT)
     return;
 
@@ -114,7 +118,7 @@ void main()
     vec3 right = vec3(1, -1, 0);
 
     // Position
-    vec3 groupHexPos = (right * gl_WorkGroupID.x + up * gl_WorkGroupID.y) * WORKGROUP_SIZE * CLUSTER_SIZE;
+    vec3 groupHexPos = (right * gl_WorkGroupID.x + up * gl_WorkGroupID.y) * (LOCAL_SIZE - OVERLAP * 2);
     vec3 localHexPos = (right * gl_LocalInvocationID.x + up * gl_LocalInvocationID.y) * CLUSTER_SIZE;
 
     // Read buffer memory into shared memory
@@ -126,12 +130,47 @@ void main()
         vec3 buffercolor = hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color;
 
         int wg_index = calcHexIndex(localHexPos + clusterpos, CLUSTER_SIZE * WORKGROUP_SIZE);
-        wg_hexdata[wg_index] = buffercolor;
+        local_hexdata[wg_index] = buffercolor;
     }
 
     barrier();
 
-    // Do shared memory operations
+    // Neighbor pattern checking
+    for (int i = 0; i < CLUSTER_SIZE * CLUSTER_SIZE; i++)
+    {
+        vec3 clusterpos = calcHexIndex(i, clustersize);
+        vec3 globalHexPos = groupHexPos + localHexPos + clusterpos;
+
+        // Don't calculate if we're outside the calculation range
+        int wg_index = calcHexIndex(localHexPos + clusterpos, LOCAL_SIZE);
+        int x_i = wg_index % LOCAL_SIZE;
+        int x_dist = min(x_i, LOCAL_SIZE - x_i - 1);
+        int y_i = int(floor(float(wg_index) / LOCAL_SIZE));
+        int y_dist = min(y_i, LOCAL_SIZE - y_i - 1);
+        if (x_dist < CALCULATE_RANGE || y_dist < CALCULATE_RANGE)
+        {
+            continue;
+        }
+
+        vec3 maxcol = vec3(0);
+        for (int n = 0; n < 1 + 6 * CALCULATE_RANGE * (CALCULATE_RANGE - 1) / 2; n++)
+        {
+            vec3 neighborhexpos = calcRevolvingHexIndex(n);
+            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos + neighborhexpos, LOCAL_SIZE);
+
+            vec3 neighbor_col = local_hexdata[neighbor_wg_index];
+
+            if (neighbor_col.b > maxcol.b) {
+                maxcol = neighbor_col;
+            }
+        }
+
+        hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color = vec3(0, 0, maxcol.b);
+    }
+
+    /** Extra computations
+
+    // Check local neighbours for triggers and store the operation in memory
     for (int i = 0; i < CLUSTER_SIZE * CLUSTER_SIZE; i++)
     {
         vec3 clusterpos = calcHexIndex(i, clustersize);
@@ -139,7 +178,7 @@ void main()
 
 //            vec3 col = cosColor((i + gl_WorkGroupID.y * 4) / 50.0, vec3(0.3, 0.3, 0.5), vec3(0.5, 0.3, 0.5), vec3(1.1, 0.4, 0.8), vec3(0.4, 0.1, 0.3));
         int wg_index = calcHexIndex(localHexPos + clusterpos, CLUSTER_SIZE * WORKGROUP_SIZE);
-        vec3 col = wg_hexdata[wg_index];
+        vec3 col = local_hexdata[wg_index];
 
         // Loop through cells that can have an impact on the current cell
         vec3 colmaxr = vec3(0);
@@ -147,18 +186,39 @@ void main()
         {
             vec3 rh = calcRevolvingHexIndex(rhi) + localHexPos + clusterpos;
 
+            // TODO: check for triggers and save them in a buffer
             int bufId = calcHexIndex(rh, CLUSTER_SIZE * WORKGROUP_SIZE);
-            vec3 bufcol = wg_hexdata[bufId];
-            if (bufcol.r > colmaxr.r) {
-                colmaxr = bufcol;
-            }
+            vec3 bufcol = local_hexdata[bufId];
+
+        }
+    }
+
+    // Look through neighbours for operations and perform them
+    for (int clusterindex = 0; clusterindex < CLUSTER_SIZE * CLUSTER_SIZE; clusterindex++)
+    {
+        vec3 clusterpos = calcHexIndex(clusterindex, clustersize);
+
+        int localindex = calcHexIndex(localHexPos + clusterpos, CLUSTER_SIZE * WORKGROUP_SIZE);
+        vec3 col = local_hexdata[localindex];
+
+        // Loop through nearby cells with a possible impact on the current cell
+        vec3 resultcol = vec3(0);
+        for (int revolveIndex = 1; revolveIndex < 1 + 6 * CALCULATE_RANGE * (CALCULATE_RANGE + 1) / 2; revolveIndex++)
+        {
+            vec3 rh = calcRevolvingHexIndex(revolveIndex) + localHexPos + clusterpos;
+
+            // TODO: Look for operations
+            resultcol = vec3(0);
         }
 
-//        hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color = wg_hexdata[wg_index - 1];
-        hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color = colmaxr;
-        //        hexgrid.nodes[calcHexIndex(globalHexPos)].color = vec3(wg_index / 900.0);
+        // Store the final color
+        vec3 globalHexPos = groupHexPos + localHexPos + clusterpos;
+        hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color = resultcol;
 
     }
+
+    //            vec3 col = cosColor((i + gl_WorkGroupID.y * 4) / 50.0, vec3(0.3, 0.3, 0.5), vec3(0.5, 0.3, 0.5), vec3(1.1, 0.4, 0.8), vec3(0.4, 0.1, 0.3));
+    **/
 }
 
 vec3 calcHexIndex(int pos, int width) {

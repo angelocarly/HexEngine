@@ -257,6 +257,7 @@ private:
 
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
+            if ( rand() % 81 == 0) {
             nodes.push_back({
                                     glm::vec3(
                                             static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0f)),
@@ -264,11 +265,9 @@ private:
                                             static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0f))
                                     )
                             });
-//            if ( rand() % 80 == 0) {
-//                nodes.push_back({glm::vec3(1.0f, 1.0f, 1.0f)});
-//            } else {
-//                nodes.push_back({glm::vec3(0.0f)});
-//            }
+            } else {
+                nodes.push_back({glm::vec3(0.0f)});
+            }
         }
 
         _bufferSize = sizeof(hex_node) * nodes.size();

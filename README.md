@@ -3,16 +3,14 @@
 This is my try at learning C++ and Vulkan at the same time. Do not expect much from this project.
 
 ## Todo
-- [ ] Core
-  - [ ] Make sure all pointers are deleted after usage
-- [ ]  Refactoring
-- [ ] Move rendering specific code out of game.hpp
-- [ ] Move implementation specific code out of the rendering logic
-- [ ] Remove unused code
-- [ ] Implement Vulkan
-  - [ ] Use initializers to clean up vulkan code
-  - [ ] Load shaders dynamically
-- [ ] Build engine on Windows as well
+- Refactoring
+- Fix synchronization when command buffers take too long
+- Make sure all pointers are deleted after usage
+- Move implementation specific code out of the rendering logic
+- Implement Vulkan
+  - Use initializers to clean up vulkan code
+  - Load shaders dynamically
+- Build engine on Windows as well
 
 ## Installation
 
