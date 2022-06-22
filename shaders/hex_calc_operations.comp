@@ -35,7 +35,7 @@ layout (std430, binding = 1) buffer HexGridOperations {
 } hexoperations;
 
 #define WG_BUF_SIZE CLUSTER_SIZE * CLUSTER_SIZE * WORKGROUP_SIZE * WORKGROUP_SIZE
-shared vec3 local_hexdata[WG_BUF_SIZE];
+shared int local_hexoperation_data[WG_BUF_SIZE];
 
 vec3[6] updirs = vec3[6](
     vec3(-1.0, 1.0, 0.0),
@@ -50,70 +50,6 @@ vec3 calcHexIndex(int position, int width);
 vec3 calcRevolvingHexIndex(int position);
 int calcHexIndex(vec3 position, int width);
 
-float sphereSdf(vec3 pos, vec3 spherePos, float radius)
-{
-    return length(pos - spherePos) - radius;
-}
-
-float boxSdf(vec3 p, vec3 b)
-{
-    vec3 q = abs(p) - b;
-    return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0);
-}
-
-float sdf(vec3 pos)
-{
-//    return max(sphereSdf(pos, vec3(30), 40), -sphereSdf(pos, vec3(10), 20));
-      return min(
-        max(
-            boxSdf(pos - vec3(50) + vec3(sin(PushConstants.time) * 10, sin(PushConstants.time * 1.2) * 20, 0), vec3(20)),
-            -sphereSdf(pos, vec3(50) - vec3(sin(PushConstants.time) * 10, sin(PushConstants.time * 1.2) * 20, 0), 27)
-        ),
-        max(
-            sphereSdf(pos, vec3(60), 40),
-            -sphereSdf(pos, vec3(40 + 10 * sin(PushConstants.time), 20 + 10 * cos(PushConstants.time * 0.6f), 40), 25)
-        )
-      );
-//    return sphereSdf(pos, vec3(33), 20);
-//    return boxSdf(pos - vec3(sin(PushConstants.time) * 10 + 20), vec3(10));
-}
-
-vec3 calcNormal( vec3  p ) // for function f(p)
-{
-    const float h = 0.0001; // replace by an appropriate value
-    const vec2 k = vec2(1,-1);
-    return normalize( k.xyy*sdf( p + k.xyy*h ) +
-    k.yyx*sdf( p + k.yyx*h ) +
-    k.yxy*sdf( p + k.yxy*h ) +
-    k.xxx*sdf( p + k.xxx*h ) );
-}
-
-float trace(vec3 pos, vec3 dir)
-{
-    float t = 0;
-    for(int step=0; step < 100; step++)
-    {
-        float tStep = sdf(pos + t * dir);
-
-        t += tStep;
-        if (tStep < 0.001f)
-        {
-            break;
-        }
-
-        if (step == 100 - 1)
-        {
-            return -1;
-        }
-    }
-    return t;
-}
-
-vec3 cosColor(float t, vec3 d, vec3 e, vec3 f, vec3 g)
-{
-    return vec3(d + e*cos(6.28318*(f*t+g)));
-}
-
 void main()
 {
     // Terminate unnecessary workgroup threads
@@ -121,7 +57,6 @@ void main()
     if (gl_GlobalInvocationID.x >= WIDTH || gl_GlobalInvocationID.y >= HEIGHT)
     return;
 
-    int clustersize = 2;
     vec3 up = vec3(-.5, -.5, 1);
     vec3 right = vec3(1, -1, 0);
 
@@ -129,24 +64,24 @@ void main()
     vec3 groupHexPos = (right * gl_WorkGroupID.x + up * gl_WorkGroupID.y) * (LOCAL_SIZE - OVERLAP * 2);
     vec3 localHexPos = (right * gl_LocalInvocationID.x + up * gl_LocalInvocationID.y) * CLUSTER_SIZE;
 
-    // Read buffer memory into shared memory
+    // Read general buffer memory and fill the shared operations buffer
     for (int i = 0; i < CLUSTER_SIZE * CLUSTER_SIZE; i++)
     {
-        vec3 clusterpos = calcHexIndex(i, clustersize);
+        vec3 clusterpos = calcHexIndex(i, CLUSTER_SIZE);
         vec3 globalHexPos = groupHexPos + localHexPos + clusterpos;
 
-        vec3 buffercolor = hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color;
+        int bufferoperation = hexoperations.operations[calcHexIndex(globalHexPos, WIDTH)].operation;
 
         int wg_index = calcHexIndex(localHexPos + clusterpos, CLUSTER_SIZE * WORKGROUP_SIZE);
-        local_hexdata[wg_index] = buffercolor;
+        local_hexoperation_data[wg_index] = bufferoperation;
     }
 
     barrier();
 
-    // Neighbor pattern checking
+    // Neighbor pattern checking for every cluster node
     for (int i = 0; i < CLUSTER_SIZE * CLUSTER_SIZE; i++)
     {
-        vec3 clusterpos = calcHexIndex(i, clustersize);
+        vec3 clusterpos = calcHexIndex(i, CLUSTER_SIZE);
         vec3 globalHexPos = groupHexPos + localHexPos + clusterpos;
 
         // Don't calculate if we're outside the calculation range
@@ -160,71 +95,79 @@ void main()
             continue;
         }
 
-//        vec3 maxcol = vec3(999999);
-//        vec3 maxindex = vec3(0);
+
+//        int max_op = 0;
 //        for (int n = 0; n < 1 + 6 * CALCULATE_RANGE * (CALCULATE_RANGE - 1) / 2; n++)
 //        {
 //            vec3 neighborhexpos = calcRevolvingHexIndex(n);
 //            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos + neighborhexpos, LOCAL_SIZE);
 //
-//            vec3 neighbor_col = local_hexdata[neighbor_wg_index];
+//            int neighbor_operation = local_hexoperation_data[neighbor_wg_index];
 //
-//            if (neighbor_col.b < maxcol.b) {
-//                maxcol = neighbor_col;
-//                maxindex.b = neighbor_wg_index;
-//            }
-//            if (neighbor_col.r < maxcol.r) {
-//                maxcol = neighbor_col;
-//                maxindex.r = neighbor_wg_index;
-//            }
+//            max_op = max(max_op, neighbor_operation);
 //        }
-//
-//        if (wg_index == maxindex.b) {
+        vec3[3] dirs = vec3[3](
+        vec3(-1, 1, 0),
+        vec3(0, -1, 1),
+        vec3(1, 0, -1)
+        );
+
+        bool valid = false;
+        for ( int i = 0; i < 3; i++ )
+        {
+            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos + dirs[i] * 2, LOCAL_SIZE);
+            int neighbor_op = local_hexoperation_data[neighbor_wg_index];
+            valid = valid || neighbor_op == 1;
+        }
+
+        bool valid2 = false;
+        for ( int i = 0; i < 3; i++ )
+        {
+            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos - dirs[i], LOCAL_SIZE);
+            int neighbor_op = local_hexoperation_data[neighbor_wg_index];
+            valid2 = valid2 || neighbor_op == 1;
+        }
+
+        bool valid3 = false;
+        for ( int i = 0; i < 3; i++ )
+        {
+            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos + dirs[i] * 3, LOCAL_SIZE);
+            int neighbor_op = local_hexoperation_data[neighbor_wg_index];
+            valid3 = valid3 || neighbor_op == 3;
+        }
+
+        bool valid4 = false;
+        for ( int i = 0; i < 3; i++ )
+        {
+            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos - dirs[i] * 2, LOCAL_SIZE);
+            int neighbor_op = local_hexoperation_data[neighbor_wg_index];
+            valid4 = valid4 || neighbor_op == 2;
+        }
+
+        bool valid5 = false;
+        for ( int i = 0; i < 3; i++ )
+        {
+            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos + dirs[i] * 1, LOCAL_SIZE);
+            int neighbor_op = local_hexoperation_data[neighbor_wg_index];
+            valid5 = valid5 || neighbor_op == 3;
+        }
+
+        vec3 col = hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color;
+        if (valid) col += vec3(0.6, 0.7, -0.3);
+        if (valid2) col += vec3(-2.4, -0.4, -0.8);
+        if (valid3) col += vec3(1.4, 1.6, 2.4);
+        if (valid4) col += vec3(-2.1, -0.7, 0);
+        if (valid5) col += vec3(-1.7, -2.7, 0);
+        hexgrid.nodes[calcHexIndex(globalHexPos, WIDTH)].color = min(vec3(10), vec3(col.r, col.g, 0));
+
+        //        if ( local_hexoperation_data[wg_index].b == maxcol.b ) {
 //            // Store operation
 //            hexoperations.operations[calcHexIndex(globalHexPos, WIDTH)].operation = 1;
-//        }
-//        else if (wg_index == maxindex.r) {
-//            // Store operation
-//            hexoperations.operations[calcHexIndex(globalHexPos, WIDTH)].operation = 2;
 //        }
 //        else {
 //            hexoperations.operations[calcHexIndex(globalHexPos, WIDTH)].operation = 0;
 //        }
 
-        vec3[6] dirs = vec3[6](
-            vec3(-1, 1, 0),
-            vec3(0, -1, 1),
-            vec3(1, 0, -1),
-            vec3(1, -1, 0),
-            vec3(0, 1, -1),
-            vec3(-1, 0, 1)
-        );
-
-        bool valid = false;
-        bool valid2 = false;
-        bool valid3 = false;
-        for ( int i = 0; i < 3; i++ )
-        {
-            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos - dirs[i] * 1, LOCAL_SIZE);
-            vec3 neighbor_col = local_hexdata[neighbor_wg_index];
-            valid = valid || (neighbor_col.g > -8 && neighbor_col.g < 1);
-        }
-
-        for ( int i = 0; i < 6; i++ )
-        {
-            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos + dirs[i] * 2, LOCAL_SIZE);
-            vec3 neighbor_col = local_hexdata[neighbor_wg_index];
-            valid2 = valid2 || (abs(int(floor(neighbor_col.r))) > 2 && abs(neighbor_col.r) < 6);
-        }
-
-        for ( int i = 0; i < 3; i++ )
-        {
-            int neighbor_wg_index = calcHexIndex(localHexPos + clusterpos - dirs[i] * 3, LOCAL_SIZE);
-            vec3 neighbor_col = local_hexdata[neighbor_wg_index];
-            valid3 = valid3 || (neighbor_col.r > 15 && neighbor_col.g > 15);
-        }
-
-        hexoperations.operations[calcHexIndex(globalHexPos, WIDTH)].operation = valid ? 1 : (valid2? 2 : (valid3? 3: 0));
     }
 
     /** Extra computations

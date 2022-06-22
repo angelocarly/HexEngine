@@ -63,7 +63,7 @@ void main()
 
     vec3 color = vec3(0);
     if (hexindex >= 0) {
-        color = hexgrid.nodes[hexindex].color;
+        color = hexgrid.nodes[hexindex].color / 10.0;
 //        color = vec3(hexindex / 100.0);
     }
 
@@ -72,7 +72,14 @@ void main()
 //    vec3 e = vec3(-0.2, -0.3, -0.5);
 //    vec3 f = vec3(2.1, 2.0, 3.0);
 //    vec3 g = vec3(0.0, 0.1, 0.0);
-//    color = cosColor(color.r / 1.5 + .5, vec3(0.3, 0.3, 0.5), vec3(0.5, 0.3, 0.5), vec3(1.1, 0.4, 0.8), vec3(0.4, 0.1, 0.3));
+//    if (abs(color.r) > abs(color.g))
+//    {
+//        color = cosColor((color.r + color.g / 2.0) / 200.0f + 2.8, vec3(0.3, 0.3, 0.5), vec3(0.5, 0.3, 0.5), vec3(1.1, 0.4, 0.8), vec3(0.4, 0.1, 0.3));
+//    }
+//    else
+    {
+        color = cosColor((color.r * color.g) / 200.0f + 3.8, vec3(0.3, 0.3, 0.5), vec3(0.5, 0.3, 0.5), vec3(1.1, 0.4, 0.8), vec3(0.4, 0.1, 0.3));
+    }
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), vec4(color, 1));
 //    vec2 ps = vec2(hexindex % WIDTH, floor(hexindex / float(WIDTH)));

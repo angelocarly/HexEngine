@@ -43,6 +43,7 @@
 #include "camera.h"
 #include "imgui/imgui.h"
 #include "core/graphics/hex_calc_pipeline.h"
+#include "core/graphics/hex_calc_operations_pipeline.h"
 
 const bool VALIDATION_LAYERS_ENABLED = true;
 const bool VSYNC = true;
@@ -64,10 +65,12 @@ public:
 		recreateSwapChain();
 		createDescriptorPool();
         hexCalcPipeline = new HexCalcPipeline(device, *swapChain, descriptorPool);
+        hexCalcOperationsPipeline = new HexCalcOperationsPipeline(device, *swapChain, descriptorPool);
         hexPipeline = new HexDisplayPipeline(device, *swapChain, descriptorPool);
         basepipeline = new BaseRenderPipeline(device, *swapChain, descriptorPool);
 		basepipeline->bindTexture(hexPipeline->getComputeTarget());
         hexPipeline->setHexBuffer(hexCalcPipeline->getHexBuffer());
+        hexCalcOperationsPipeline->setBuffers(hexCalcPipeline->getHexBuffer(), hexCalcPipeline->getHexOperationsBuffer());
 		createCommandBuffers();
 
 		gui.initImGui(device, *swapChain, descriptorPool);
@@ -134,6 +137,7 @@ private:
 	VksInput inputhandler = VksInput();
 
     HexCalcPipeline *hexCalcPipeline = nullptr;
+    HexCalcOperationsPipeline *hexCalcOperationsPipeline = nullptr;
 	HexDisplayPipeline *hexPipeline = nullptr;
 	BaseRenderPipeline *basepipeline = nullptr;
 
@@ -276,12 +280,17 @@ private:
             hexCalcPipeline->begin(computeCommandBuffer, 0);
             hexCalcPipeline->execute();
             hexCalcPipeline->end();
+
+            hexCalcOperationsPipeline->begin(computeCommandBuffer, 0);
+            hexCalcOperationsPipeline->execute();
+            hexCalcOperationsPipeline->end();
         }
         framessincelastcompute++;
 
 		hexPipeline->begin(computeCommandBuffer, 0);
 		hexPipeline->updateBuffers();
 		hexPipeline->end();
+
 
 		if (vkEndCommandBuffer(computeCommandBuffer) != VK_SUCCESS) {
 			throw std::runtime_error("failed to record command buffer!");

@@ -2,15 +2,15 @@
 // Created by magnias on 04/04/2021.
 //
 
-#ifndef _HEX_CALC_PIPELINE_H_
-#define _HEX_CALC_PIPELINE_H_
+#ifndef _HEX_CALC_OPERATIONS_PIPELINE_H_
+#define _HEX_CALC_OPERATIONS_PIPELINE_H_
 
 #include <vks/vks_util.h>
 #include "render_pipeline.h"
 #include <lodepng.h>
 #include <vks/VulkanInitializers.h>
 
-class HexCalcPipeline : public IRenderPipeline
+class HexCalcOperationsPipeline : public IRenderPipeline
 {
 public:
 
@@ -24,7 +24,7 @@ public:
         int operation;
     };
 
-    HexCalcPipeline(VksDevice &device, VksSwapChain &swapChain, VkDescriptorPool &descriptorPool)
+    HexCalcOperationsPipeline(VksDevice &device, VksSwapChain &swapChain, VkDescriptorPool &descriptorPool)
             : _device(device), _descriptorPool(descriptorPool), _swapChain(swapChain)
     {
         init();
@@ -71,15 +71,6 @@ public:
         bufferInfo.buffer = _hexBuffer;
         bufferInfo.offset = 0;
         bufferInfo.range = _hexBufferSize;
-        return bufferInfo;
-    }
-
-    VkDescriptorBufferInfo getHexOperationsBuffer()
-    {
-        VkDescriptorBufferInfo bufferInfo{};
-        bufferInfo.buffer = _hexOperationBuffer;
-        bufferInfo.offset = 0;
-        bufferInfo.range = _hexOperationBufferSize;
         return bufferInfo;
     }
 
@@ -208,21 +199,10 @@ private:
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
-        updateDescriptorSets(getHexBuffer(), getHexOperationsBuffer());
     }
 
     void updateDescriptorSets(VkDescriptorBufferInfo hexBuffer, VkDescriptorBufferInfo hexOperationsBuffer)
     {
-        VkDescriptorBufferInfo hexBufferInfo{};
-        hexBufferInfo.buffer = _hexBuffer;
-        hexBufferInfo.offset = 0;
-        hexBufferInfo.range = _hexBufferSize;
-
-        VkDescriptorBufferInfo hexOperationBufferInfo{};
-        hexOperationBufferInfo.buffer = _hexOperationBuffer;
-        hexOperationBufferInfo.offset = 0;
-        hexOperationBufferInfo.range = _hexOperationBufferSize;
-
         std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
         descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -231,7 +211,7 @@ private:
         descriptorWrites[0].dstArrayElement = 0;
         descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         descriptorWrites[0].descriptorCount = 1;
-        descriptorWrites[0].pBufferInfo = &hexBufferInfo;
+        descriptorWrites[0].pBufferInfo = &hexBuffer;
 
         descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descriptorWrites[1].dstSet = _descriptorSet;
@@ -239,7 +219,7 @@ private:
         descriptorWrites[1].dstArrayElement = 0;
         descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
         descriptorWrites[1].descriptorCount = 1;
-        descriptorWrites[1].pBufferInfo = &hexOperationBufferInfo;
+        descriptorWrites[1].pBufferInfo = &hexOperationsBuffer;
 
         vkUpdateDescriptorSets(_device.getVkDevice(), descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
     }
@@ -255,7 +235,7 @@ private:
         VkPipelineShaderStageCreateInfo shaderStageCreateInfo = {};
         shaderStageCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         shaderStageCreateInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-        shaderStageCreateInfo.module = _device.createShaderModule(VksUtil::readFile("shaders/hex_calc.comp.spv"));
+        shaderStageCreateInfo.module = _device.createShaderModule(VksUtil::readFile("shaders/hex_calc_operations.comp.spv"));
         shaderStageCreateInfo.pName = "main";
 
         VkPushConstantRange push_constant;
@@ -303,15 +283,12 @@ private:
 
         for (int i = 0; i < WIDTH * HEIGHT; i++)
         {
-            if ( rand() % 80 == 0) {
-//            if (true) {
+            if ( rand() % 81 == 0) {
             nodes.push_back({
                                     glm::vec3(
-                                            (float) static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.0f)),
-0.0f,
-0.0f
-//                                            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.0f)),
-//                                            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 10.0f))
+                                            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0f)),
+                                            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0f)),
+                                            static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 1.0f))
                                     )
                             });
             } else {
@@ -385,4 +362,4 @@ private:
 
 };
 
-#endif //_HEX_CALC_PIPELINE_H_
+#endif //_HEX_CALC_OPERATIONS_PIPELINE_H_
